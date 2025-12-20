@@ -1,7 +1,4 @@
-using System;
 using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using Dapper;
 using Gamma.Kernel.Abstractions;
 using Gamma.Kernel.Caching;
@@ -89,7 +86,7 @@ public sealed class GenericRepository<TEntity> : IRepository<TEntity>
 
     private void SetAuditFields(TEntity entity, ChangeAction action)
     {
-        var user = _currentUser.GetUserName();
+        var actor = _currentUser.GetActor();
         var now = _clock.UtcNow;
 
         if (action == ChangeAction.Insert)
@@ -97,10 +94,10 @@ public sealed class GenericRepository<TEntity> : IRepository<TEntity>
             if (entity.Id == Guid.Empty)
                 entity.Id = Guid.NewGuid();
 
-            entity.SetCreated(user, now);
+            entity.LogCreatedBy(actor, now);
         }
 
-        entity.SetModified(user, now);
+        entity.LogModifiedBy(actor, now);
     }
 
     #endregion

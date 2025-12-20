@@ -113,17 +113,34 @@ public class CustomBoolConverter : JsonConverter<bool>
     public override void Write(Utf8JsonWriter writer, bool value, JsonSerializerOptions options) => writer.WriteBooleanValue(value);
 }
 
-public class CustomStringConverter : JsonConverter<string>
+public sealed class CustomStringConverter : JsonConverter<string>
 {
-    public override string Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        => reader.TokenType == JsonTokenType.Number ? reader.GetInt64().ToString() : reader.GetString();
+    public override string Read(
+        ref Utf8JsonReader reader,
+        Type typeToConvert,
+        JsonSerializerOptions options)
+    {
+        return reader.TokenType switch
+        {
+            JsonTokenType.Number => reader.GetInt64().ToString(),
+            JsonTokenType.String => reader.GetString() ?? string.Empty,
+            JsonTokenType.Null => string.Empty,
+            _ => throw new JsonException(
+                    $"Unexpected token {reader.TokenType} when parsing string")
+        };
+    }
 
-    public override void Write(Utf8JsonWriter writer, string value, JsonSerializerOptions options) => writer.WriteStringValue(value);
+    public override void Write(
+        Utf8JsonWriter writer,
+        string value,
+        JsonSerializerOptions options)
+        => writer.WriteStringValue(value);
 }
+
 
 public class CustomDateTimeConverter : JsonConverter<DateTime>
 {
-    private static readonly string[] Formats = { "yyyy-MM-ddTHH:mm:ss.fffZ", "yyyy-MM-ddTHH:mm:ss", "yyyy/MM/dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss", "yyyy/MM/dd", "yyyy-MM-dd" };
+    private static readonly string[] Formats = ["yyyy-MM-ddTHH:mm:ss.fffZ", "yyyy-MM-ddTHH:mm:ss", "yyyy/MM/dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss", "yyyy/MM/dd", "yyyy-MM-dd"];
     public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var val = reader.GetString();

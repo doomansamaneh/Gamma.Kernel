@@ -17,3 +17,17 @@ public enum SanitizerType
     Css = 5,
     HtmlFormUrl = 6
 }
+
+public enum SqlClause
+{
+    DeleteFrom = 1,
+    Update = 2,
+    Set = 3,
+    Select = 10,
+    From = 11,
+    Join = 12,
+    Where = 13,
+    GroupBy = 14,
+    Having = 15,
+    OrderBy = 16
+}

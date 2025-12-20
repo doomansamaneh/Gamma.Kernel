@@ -265,7 +265,7 @@ public static class StringExtensions
         sanitizer.AllowedSchemes.Clear();
         sanitizer.AllowedSchemes.Add("http");
         sanitizer.AllowedSchemes.Add("https");
-        return sanitizer.Sanitize(htmlIn, baseUrl);
+        return sanitizer.Sanitize(htmlIn, baseUrl ?? "");
     }
 
     public static string RemoveHtmlXss(this string? htmlIn, string? baseUrl = null)
@@ -304,7 +304,7 @@ public static class StringExtensions
             }
         };
 
-        return sanitizer.Sanitize(htmlIn, baseUrl);
+        return sanitizer.Sanitize(htmlIn, baseUrl ?? "");
     }
 
     public static bool IsWhiteSpace(this char ch) =>

@@ -4,10 +4,9 @@ namespace Gamma.Kernel.Models;
 
 public class LogActorModel
 {
-    public Guid Id { get; set; }
-    public string Name { get; set; }
-    public string Ip { get; set; }
-    public string UserAgent { get; set; }
-    public string DeviceName { get; set; }
-    public string RoleTitle { get; set; }
+    public Guid Id { get; init; }
+    public string? Name { get; init; }
+    public string? Ip { get; init; }
+    public string? UserAgent { get; init; }
+    public string? DeviceName { get; init; }
 }
