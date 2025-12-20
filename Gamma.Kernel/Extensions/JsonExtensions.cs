@@ -160,7 +160,7 @@ public class CustomDateTimeConverter : JsonConverter<DateTime>
 
 public class CustomDateTimeNullConverter : JsonConverter<DateTime?>
 {
-    private static readonly string[] Formats = { "yyyy-MM-ddTHH:mm:ss.fffZ", "yyyy-MM-ddTHH:mm:ss", "yyyy/MM/dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss", "yyyy/MM/dd", "yyyy-MM-dd" };
+    private static readonly string[] Formats = ["yyyy-MM-ddTHH:mm:ss.fffZ", "yyyy-MM-ddTHH:mm:ss", "yyyy/MM/dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss", "yyyy/MM/dd", "yyyy-MM-dd"];
     public override DateTime? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var val = reader.GetString();

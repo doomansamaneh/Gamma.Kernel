@@ -1,6 +1,5 @@
-using Gamma.Next.Domain.Enums;
-using Gamma.Next.Domain.Attributes;
-using Gamma.Next.Domain.Common;
+using Gamma.Kernel.Attributes;
+using Gamma.Kernel.Entities;
 
 namespace Gamma.Next.Domain.Entities;
 

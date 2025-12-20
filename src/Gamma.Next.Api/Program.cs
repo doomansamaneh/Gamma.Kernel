@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services
     .AddHttpContextAccessor()
     .AddApplication()
-    .AddInfra(builder.Configuration);
+    .AddInfra();
 
 var app = builder.Build();
 
@@ -19,6 +19,6 @@ app.MapGet("/", () =>
         time = DateTime.Now
     }));
 
-app.MapCustomerEndpoints();
+app.MapProductGroupEndPoints();
 
 app.Run();
