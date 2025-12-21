@@ -1,9 +1,9 @@
 using System.Data;
 using Gamma.Kernel.Abstractions;
 
-namespace Gamma.Next.Infra.Data;
+namespace Gamma.Kernel.Data;
 
-internal class DapperUnitOfWork : IUnitOfWork
+public class DapperUnitOfWork : IUnitOfWork
 {
     private readonly IDbConnection _connection;
     private readonly IDbTransaction? _transaction;
@@ -18,16 +18,19 @@ internal class DapperUnitOfWork : IUnitOfWork
         _transaction = _connection.BeginTransaction();
     }
 
-    public async Task CommitAsync()
+    private bool _completed;
+    public Task CommitAsync()
     {
+        if (_completed) throw new InvalidOperationException("UnitOfWork already completed.");
         _transaction?.Commit();
-        await DisposeAsync();
+        _completed = true;
+        return Task.CompletedTask;
     }
 
-    public async Task RollbackAsync()
+    public Task RollbackAsync()
     {
         _transaction?.Rollback();
-        await DisposeAsync();
+        return Task.CompletedTask;
     }
 
     public async ValueTask DisposeAsync()

@@ -8,10 +8,11 @@ internal class DeleteProductGroupHandler(IRepository<Domain.Entities.ProductGrou
     : ICommandHandler<DeleteCommand, int>
 {
     private readonly IRepository<Domain.Entities.ProductGroup> _repository = repository;
-    public async Task<Result<int>> Handle(DeleteCommand command,
-         CancellationToken ct = default)
+    public async Task<Result<int>> Handle(IUnitOfWork uow,
+        DeleteCommand command,
+        CancellationToken ct = default)
     {
-        var affected = await _repository.DeleteByIdAsync(command.Id, ct);
+        var affected = await _repository.DeleteByIdAsync(uow, command.Id, ct);
         return Result<int>.Ok(affected);
     }
 }

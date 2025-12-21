@@ -6,21 +6,19 @@ using Gamma.Kernel.Entities;
 using Gamma.Kernel.Enums;
 using Gamma.Kernel.Extensions;
 
-namespace Gamma.Kernel.Services;
+namespace Gamma.Kernel.Data;
 
 public sealed class GenericRepository<TEntity>(
     ICurrentUser currentUser,
-    ISystemClock clock,
-    IUnitOfWork unitOfWork) : IRepository<TEntity>
+    ISystemClock clock) : IRepository<TEntity>
     where TEntity : BaseEntity, new()
 {
-    private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICurrentUser _currentUser = currentUser ?? throw new ArgumentNullException(nameof(currentUser));
     private readonly ISystemClock _clock = clock ?? throw new ArgumentNullException(nameof(clock));
 
     #region CUD Operations
 
-    public async Task<TEntity> InsertAsync(TEntity entity, CancellationToken ct = default)
+    public async Task<TEntity> InsertAsync(IUnitOfWork uow, TEntity entity, CancellationToken ct = default)
     {
         ArgumentNullException.ThrowIfNull(entity);
 
@@ -33,12 +31,12 @@ public sealed class GenericRepository<TEntity>(
 
         var sql = $"INSERT INTO {EntityPropertyCache<TEntity>.Instance.TableName} ({columns}) VALUES ({parameters})";
 
-        await _unitOfWork.Connection.ExecuteAsync(sql, entity, _unitOfWork.Transaction);
+        await uow.Connection.ExecuteAsync(sql, entity, uow.Transaction);
 
         return entity;
     }
 
-    public async Task<int> UpdateAsync(TEntity entity, CancellationToken ct = default)
+    public async Task<int> UpdateAsync(IUnitOfWork uow, TEntity entity, CancellationToken ct = default)
     {
         ArgumentNullException.ThrowIfNull(entity);
 
@@ -57,16 +55,16 @@ public sealed class GenericRepository<TEntity>(
             sql += $" AND {rowVersionProp.Name} = @{rowVersionProp.Name}";
         }
 
-        var affected = await _unitOfWork.Connection.ExecuteAsync(sql, entity, _unitOfWork.Transaction);
+        var affected = await uow.Connection.ExecuteAsync(sql, entity, uow.Transaction);
         if (affected == 0) throw new DBConcurrencyException("Entity update failed due to concurrency violation.");
 
         return affected;
     }
 
-    public async Task<int> DeleteByIdAsync(Guid id, CancellationToken ct = default)
+    public async Task<int> DeleteByIdAsync(IUnitOfWork uow, Guid id, CancellationToken ct = default)
     {
         var sql = $"DELETE FROM {EntityPropertyCache<TEntity>.Instance.TableName} WHERE Id = @Id";
-        var affected = await _unitOfWork.Connection.ExecuteAsync(sql, new { Id = id }, _unitOfWork.Transaction);
+        var affected = await uow.Connection.ExecuteAsync(sql, new { Id = id }, uow.Transaction);
         return affected;
     }
 

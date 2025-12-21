@@ -1,8 +1,8 @@
 using Gamma.Kernel.Abstractions;
 
-namespace Gamma.Next.Infra.Data;
+namespace Gamma.Kernel.Data;
 
-internal sealed class DapperUnitOfWorkFactory(IDbConnectionFactory connectionFactory) : IUnitOfWorkFactory
+public sealed class DapperUnitOfWorkFactory(IDbConnectionFactory connectionFactory) : IUnitOfWorkFactory
 {
     private readonly IDbConnectionFactory _connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
 

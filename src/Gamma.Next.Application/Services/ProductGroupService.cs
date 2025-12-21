@@ -3,6 +3,7 @@ using FluentValidation;
 using Gamma.Kernel.Abstractions;
 using Gamma.Kernel.Dapper;
 using Gamma.Kernel.Models;
+using Gamma.Kernel.Services;
 using Gamma.Next.Application.Commands.ProductGroup;
 using Gamma.Next.Application.Commands.Shared;
 using Gamma.Next.Application.Interfaces;
@@ -15,46 +16,44 @@ internal class ProductGroupService(
     ICommandHandler<AddProductGroupCommand, Guid> addHandler,
     ICommandHandler<EditProductGroupCommand, int> editHandler,
     ICommandHandler<DeleteCommand, int> deleteHandler,
-    IValidator<AddProductGroupCommand> addProductGroupValidator
-) : ICommandService<AddProductGroupCommand, EditProductGroupCommand, Guid>
+    IValidator<AddProductGroupCommand> addValidator)
+    : BaseCommandService<
+        ICommandHandler<AddProductGroupCommand, Guid>,
+        AddProductGroupCommand,
+        ICommandHandler<EditProductGroupCommand, int>,
+        EditProductGroupCommand,
+        ICommandHandler<DeleteCommand, int>,
+        DeleteCommand>(unitOfWorkFactory, addHandler, editHandler, deleteHandler),
+    IProductGroupService
 {
-    private async Task<Result<T>> ExecuteHandlerAsync<T>(Func<Task<Result<T>>> handlerFunc)
+    private readonly IDbConnectionFactory _connectionFactory = connectionFactory;
+    private readonly IValidator<AddProductGroupCommand> _addValidator = addValidator;
+
+    public override async Task<Result<Guid>> AddAsync(AddProductGroupCommand command, CancellationToken ct = default)
     {
-        await using var uow = unitOfWorkFactory.Create();
-        var result = await handlerFunc();
+        var validationResult = await ValidateAsync(command, ct);
+        if (!validationResult.Success)
+            return Result<Guid>.Fail(validationResult.Errors, validationResult.Message);
 
-        if (!result.Success) await uow.RollbackAsync();
-        else await uow.CommitAsync();
-
-        return result;
+        return await ExecuteHandlerAsync(uow => _addHandler.Handle(uow, command, ct));
     }
-
-    public async Task<Result<Guid>> AddAsync(AddProductGroupCommand command, CancellationToken ct = default)
-    {
-        var validation = await ValidateAsync(command, ct);
-        if (!validation.Success) return Result<Guid>.Fail(validation.Errors, validation.Message);
-
-        return await ExecuteHandlerAsync(() => addHandler.Handle(command, ct));
-    }
-
-    public Task<Result<int>> EditAsync(EditProductGroupCommand command, CancellationToken ct = default)
-        => ExecuteHandlerAsync(() => editHandler.Handle(command, ct));
-
-    public Task<Result<int>> DeleteAsync(DeleteCommand command, CancellationToken ct = default)
-        => ExecuteHandlerAsync(() => deleteHandler.Handle(command, ct));
 
     private async Task<Result<bool>> ValidateAsync(AddProductGroupCommand command, CancellationToken ct = default)
     {
-        var result = await addProductGroupValidator.ValidateAsync(command, ct);
+        // FluentValidation
+        var result = await _addValidator.ValidateAsync(command, ct);
         if (!result.IsValid)
             return Result<bool>.Fail(result.Errors.Select(e => e.ErrorMessage));
 
-        using var db = connectionFactory.CreateConnection();
-        if (db.State != System.Data.ConnectionState.Open) db.Open();
-        // Duplicate Check
+        // Database check
+        using var db = _connectionFactory.CreateConnection();
+        if (db.State != System.Data.ConnectionState.Open)
+            db.Open();
+
         var query = SQL.Select("count(1)")
-                    .From("Ast.ProductGroup")
-                    .Where("Code = @Code");
+                       .From("Ast.ProductGroup")
+                       .Where("Code = @Code");
+
         var exists = await db.ExecuteScalarAsync<int>(query.ToString(), new { command.ProductGroup.Code });
 
         if (exists > 0)
