@@ -1,6 +1,6 @@
 namespace Gamma.Kernel.Exceptions;
 
-public class DomainException(string message) : GammaException(message, 400)
+public sealed class DomainException(string message) : GammaException(message, 400)
 {
 }
 

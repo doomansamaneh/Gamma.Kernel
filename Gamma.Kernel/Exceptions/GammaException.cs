@@ -2,7 +2,7 @@
 
 namespace Gamma.Kernel.Exceptions;
 
-public class GammaException : Exception
+public class GammaException : Exception, IExpectedException
 {
     public int StatusCode { get; }
 

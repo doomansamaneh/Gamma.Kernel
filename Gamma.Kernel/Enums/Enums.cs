@@ -31,3 +31,42 @@ public enum SqlClause
     Having = 15,
     OrderBy = 16
 }
+
+public enum ErrorCodes
+{
+    // ---------- General ----------
+    Unknown = 1000,
+    InternalServerError = 1001,
+
+    // ---------- Authorization ----------
+    Unauthorized = 1100,
+    Forbidden = 1101,
+
+    // ---------- Validation ----------
+    ValidationError = 1200,
+    BusinessRuleViolation = 1201,
+
+    // ---------- Database ----------
+    DatabaseError = 1300,
+    DatabaseForeignKey = 1301,
+    DatabaseUniqueKey = 1302,
+    DatabaseDataValidation = 1303,
+    DatabaseTimeout = 1304,
+
+    // ---------- Concurrency ----------
+    ConcurrencyConflict = 1400,
+
+    // ---------- Infrastructure ----------
+    DependencyFailure = 1500,
+    ServiceUnavailable = 1501
+}
+
+public enum DatabaseErrorType
+{
+    Unknown,
+    ForeignKeyViolation,
+    UniqueConstraintViolation,
+    DataValidation,
+    Timeout,
+    ConcurrencyConflict
+}

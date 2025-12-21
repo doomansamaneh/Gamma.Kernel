@@ -1,3 +1,4 @@
+using Gamma.Kernel.Web.Extensions;
 using Gamma.Next.Api.Endpoints;
 using Gamma.Next.Application;
 using Gamma.Next.Infra;
@@ -10,6 +11,14 @@ builder.Services
     .AddInfra();
 
 var app = builder.Build();
+
+// if (app.Environment.IsDevelopment())
+// {
+//     app.UseSwagger();
+//     app.UseSwaggerUI();
+// }
+
+app.UseKernelDefaults();
 
 app.MapGet("/", () =>
     Results.Ok(new
