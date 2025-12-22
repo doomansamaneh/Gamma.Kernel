@@ -11,6 +11,8 @@ public class DapperUnitOfWork : IUnitOfWork
     public IDbConnection Connection => _connection;
     public IDbTransaction Transaction => _transaction!;
 
+    private readonly List<Func<CancellationToken, Task>> _onCommitted = [];
+
     public DapperUnitOfWork(IDbConnectionFactory connectionFactory)
     {
         _connection = connectionFactory.CreateConnection();
@@ -18,18 +20,30 @@ public class DapperUnitOfWork : IUnitOfWork
         _transaction = _connection.BeginTransaction();
     }
 
+    public void OnCommitted(Func<CancellationToken, Task> action)
+    {
+        if (_completed) throw new InvalidOperationException("Cannot register OnCommitted after completion.");
+
+        _onCommitted.Add(action);
+    }
+
     private bool _completed;
-    public Task CommitAsync()
+    public async Task CommitAsync(CancellationToken ct = default)
     {
         if (_completed) throw new InvalidOperationException("UnitOfWork already completed.");
         _transaction?.Commit();
         _completed = true;
-        return Task.CompletedTask;
+        foreach (var action in _onCommitted)
+            await action(ct);
     }
 
-    public Task RollbackAsync()
+    public Task RollbackAsync(CancellationToken ct = default)
     {
+        if (_completed) return Task.CompletedTask;
+
         _transaction?.Rollback();
+        _completed = true;
+
         return Task.CompletedTask;
     }
 

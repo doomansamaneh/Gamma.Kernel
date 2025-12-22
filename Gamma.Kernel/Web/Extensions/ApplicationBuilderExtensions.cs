@@ -18,6 +18,6 @@ public static class KernelMiddlewareExtensions
             .UseKernelMiddleware<GlobalExceptionMiddleware>()
             //.UseKernelMiddleware<RequestLoggingMiddleware>()
             //.UseKernelMiddleware<CorrelationIdMiddleware>()
-            // ;
+            ;
     }
 }

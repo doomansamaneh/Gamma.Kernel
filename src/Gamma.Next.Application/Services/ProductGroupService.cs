@@ -15,15 +15,15 @@ internal class ProductGroupService(
     IDbConnectionFactory connectionFactory,
     ICommandHandler<AddProductGroupCommand, Guid> addHandler,
     ICommandHandler<EditProductGroupCommand, int> editHandler,
-    ICommandHandler<DeleteCommand, int> deleteHandler,
+    ICommandHandler<DeleteProductGroupCommand, int> deleteHandler,
     IValidator<AddProductGroupCommand> addValidator)
     : BaseCommandService<
         ICommandHandler<AddProductGroupCommand, Guid>,
         AddProductGroupCommand,
         ICommandHandler<EditProductGroupCommand, int>,
         EditProductGroupCommand,
-        ICommandHandler<DeleteCommand, int>,
-        DeleteCommand>(unitOfWorkFactory, addHandler, editHandler, deleteHandler),
+        ICommandHandler<DeleteProductGroupCommand, int>,
+        DeleteProductGroupCommand>(unitOfWorkFactory, addHandler, editHandler, deleteHandler),
     IProductGroupService
 {
     private readonly IDbConnectionFactory _connectionFactory = connectionFactory;

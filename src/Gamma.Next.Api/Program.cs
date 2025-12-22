@@ -1,4 +1,5 @@
 using Gamma.Kernel.Web.Extensions;
+using Gamma.Kernel;
 using Gamma.Next.Api.Endpoints;
 using Gamma.Next.Application;
 using Gamma.Next.Infra;
@@ -7,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
     .AddHttpContextAccessor()
+    .AddKernel()
     .AddApplication()
     .AddInfra();
 

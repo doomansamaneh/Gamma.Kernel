@@ -25,13 +25,14 @@ public class EntityPropertyCache<TEntity>
 
         InsertableProperties = [.. AllProperties
             .Where(p => p.CanWrite)
-            .Where(p => p.Name != "Id")
             .Where(p => p.GetCustomAttribute<IdentityAttribute>() is null)
-            .Where(p => p.GetCustomAttribute<InsertOnlyAttribute>() is null)];
+            .Where(p => p.GetCustomAttribute<ComputedAttribute>() is null)];
 
         UpdatableProperties = [.. AllProperties
             .Where(p => p.CanWrite)
             .Where(p => p.Name != "Id")
+            .Where(p => p.GetCustomAttribute<InsertOnlyAttribute>() is null)
+            .Where(p => p.GetCustomAttribute<ComputedAttribute>() is null)
             .Where(p => p.GetCustomAttribute<IdentityAttribute>() is null)];
 
         RowVersionProperty = AllProperties.FirstOrDefault(p => p.GetCustomAttribute<RowVersionAttribute>() is not null);

@@ -26,7 +26,7 @@ public static class ExceptionMapper
             _ => new ErrorResponse
             {
                 Code = (int)ErrorCodes.InternalServerError,
-                Message = "An unexpected error occurred"
+                Message = exception.Message
             }
         };
     }

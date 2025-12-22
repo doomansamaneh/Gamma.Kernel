@@ -6,8 +6,9 @@ public interface IUnitOfWork : IAsyncDisposable
 {
     IDbConnection Connection { get; }
     IDbTransaction Transaction { get; }
-    Task CommitAsync();
-    Task RollbackAsync();
+    Task CommitAsync(CancellationToken ct = default);
+    Task RollbackAsync(CancellationToken ct = default);
+    void OnCommitted(Func<CancellationToken, Task> action);
 }
 
 

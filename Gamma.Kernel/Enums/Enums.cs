@@ -70,3 +70,11 @@ public enum DatabaseErrorType
     Timeout,
     ConcurrencyConflict
 }
+
+public enum AuditAction
+{
+    Create,
+    Update,
+    Delete,
+    Read
+}

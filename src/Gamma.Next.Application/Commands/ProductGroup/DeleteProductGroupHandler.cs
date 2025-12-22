@@ -1,15 +1,14 @@
 using Gamma.Kernel.Abstractions;
 using Gamma.Kernel.Models;
-using Gamma.Next.Application.Commands.Shared;
 
 namespace Gamma.Next.Application.Commands.ProductGroup;
 
 internal class DeleteProductGroupHandler(IRepository<Domain.Entities.ProductGroup> repository)
-    : ICommandHandler<DeleteCommand, int>
+    : ICommandHandler<DeleteProductGroupCommand, int>
 {
     private readonly IRepository<Domain.Entities.ProductGroup> _repository = repository;
     public async Task<Result<int>> Handle(IUnitOfWork uow,
-        DeleteCommand command,
+        DeleteProductGroupCommand command,
         CancellationToken ct = default)
     {
         var affected = await _repository.DeleteByIdAsync(uow, command.Id, ct);

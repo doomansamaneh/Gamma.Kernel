@@ -1,6 +1,6 @@
 namespace Gamma.Kernel.Attributes;
 
 [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
-public sealed class IdentityAttribute : Attribute
+public sealed class ComputedAttribute : Attribute
 {
 }

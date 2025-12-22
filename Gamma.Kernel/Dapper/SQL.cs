@@ -6,7 +6,7 @@ public static class SQL
     {
         //todo: 
         //return new SqlBuilder().WITH(format, args);
-        return null;
+        return new();
     }
 
     public static SqlBuilder Select(string format)

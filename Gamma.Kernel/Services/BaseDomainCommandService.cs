@@ -8,14 +8,24 @@ public abstract class BaseDomainCommandService(IUnitOfWorkFactory unitOfWorkFact
 {
     protected readonly IUnitOfWorkFactory _unitOfWorkFactory = unitOfWorkFactory;
 
-    protected async Task<Result<T>> ExecuteHandlerAsync<T>(Func<IUnitOfWork, Task<Result<T>>> action)
+    protected async Task<Result<T>> ExecuteHandlerAsync<T>(Func<IUnitOfWork,
+        Task<Result<T>>> action,
+        CancellationToken ct = default)
     {
         await using var uow = _unitOfWorkFactory.Create();
-        var result = await action(uow);
+        try
+        {
+            var result = await action(uow);
 
-        if (result.Success) await uow.CommitAsync();
-        else await uow.RollbackAsync();
+            if (result.Success) await uow.CommitAsync(ct);
+            else await uow.RollbackAsync(ct);
 
-        return result;
+            return result;
+        }
+        catch
+        {
+            await uow.RollbackAsync(ct);
+            throw;
+        }
     }
 }

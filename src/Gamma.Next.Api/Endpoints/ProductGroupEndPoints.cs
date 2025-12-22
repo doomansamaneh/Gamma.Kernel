@@ -1,8 +1,6 @@
 using Gamma.Next.Application.Commands.ProductGroup;
 using Gamma.Next.Application.Commands.Shared;
 using Gamma.Next.Application.Interfaces;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 
 namespace Gamma.Next.Api.Endpoints;
 
@@ -45,11 +43,28 @@ public static class ProductGroupEndpoints
             CancellationToken ct
         ) =>
         {
-            var command = new DeleteCommand { Id = id };
+            var command = new DeleteProductGroupCommand { Id = id };
             var result = await service.DeleteAsync(command, ct);
             return result.Success
                 ? Results.Ok(result.Data)
                 : Results.BadRequest(result.Errors);
+        });
+
+        // test add service
+        app.MapGet("/test-product-groups", async (IProductGroupService service, CancellationToken ct) =>
+        {
+            var command = new AddProductGroupCommand(new ProductGroupInput
+            {
+                Code = "t001",
+                Title = "Test Product Group",
+                Comment = "This is a test product group",
+                IsActive = true
+            });
+
+            var result = await service.AddAsync(command, ct);
+            return result.Success
+                    ? Results.Ok(new { Id = result.Data, command.ProductGroup.Code, command.ProductGroup.Title })
+                    : Results.BadRequest(result.Errors);
         });
     }
 }
