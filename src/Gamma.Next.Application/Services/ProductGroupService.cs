@@ -3,9 +3,9 @@ using FluentValidation;
 using Gamma.Kernel.Abstractions;
 using Gamma.Kernel.Dapper;
 using Gamma.Kernel.Models;
+using Gamma.Kernel.Security;
 using Gamma.Kernel.Services;
 using Gamma.Next.Application.Commands.ProductGroup;
-using Gamma.Next.Application.Commands.Shared;
 using Gamma.Next.Application.Interfaces;
 
 namespace Gamma.Next.Application.Services;
@@ -24,18 +24,20 @@ internal class ProductGroupService(
         EditProductGroupCommand,
         ICommandHandler<DeleteProductGroupCommand, int>,
         DeleteProductGroupCommand>(unitOfWorkFactory, addHandler, editHandler, deleteHandler),
-    IProductGroupService
+    IProductGroupService,
+    IApplicationService
 {
     private readonly IDbConnectionFactory _connectionFactory = connectionFactory;
     private readonly IValidator<AddProductGroupCommand> _addValidator = addValidator;
 
+    [RequiresPermission("ast.product-group.create")]
     public override async Task<Result<Guid>> AddAsync(AddProductGroupCommand command, CancellationToken ct = default)
     {
         var validationResult = await ValidateAsync(command, ct);
         if (!validationResult.Success)
             return Result<Guid>.Fail(validationResult.Errors, validationResult.Message);
 
-        return await ExecuteHandlerAsync(uow => _addHandler.Handle(uow, command, ct));
+        return await ExecuteHandlerAsync(uow => _addHandler.Handle(uow, command, ct), ct);
     }
 
     private async Task<Result<bool>> ValidateAsync(AddProductGroupCommand command, CancellationToken ct = default)

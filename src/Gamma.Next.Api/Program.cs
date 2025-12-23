@@ -3,6 +3,7 @@ using Gamma.Kernel;
 using Gamma.Next.Api.Endpoints;
 using Gamma.Next.Application;
 using Gamma.Next.Infra;
+using Gamma.Next.Api;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +11,8 @@ builder.Services
     .AddHttpContextAccessor()
     .AddKernel()
     .AddApplication()
-    .AddInfra();
+    .AddInfra()
+    .AddApi();
 
 var app = builder.Build();
 

@@ -5,18 +5,15 @@ using Microsoft.AspNetCore.Http;
 
 namespace Gamma.Next.Infra.Identity;
 
-public sealed class HttpCurrentUser : ICurrentUser
+public sealed class HttpCurrentUser(IHttpContextAccessor httpContextAccessor) : ICurrentUser
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    public IReadOnlyCollection<string> Roles => ["admin"];
 
-    public HttpCurrentUser(IHttpContextAccessor httpContextAccessor)
-    {
-        _httpContextAccessor = httpContextAccessor;
-    }
+    public IReadOnlyCollection<string> Permissions => ["ast.product-group.create", "ast.product-group.view", "ast.product-group.edit"];
 
     public Guid GetUserId()
     {
-        var user = _httpContextAccessor.HttpContext?.User;
+        var user = httpContextAccessor.HttpContext?.User;
         if (user == null || user.Identity?.IsAuthenticated != true)
             return Kernel.Constants.ADMIN_ID;
 
@@ -32,13 +29,13 @@ public sealed class HttpCurrentUser : ICurrentUser
 
     public string GetUserName()
     {
-        var user = _httpContextAccessor.HttpContext?.User;
+        var user = httpContextAccessor.HttpContext?.User;
         return user?.Identity?.Name ?? Kernel.Constants.ADMIN_NAME;
     }
 
     public LogActorModel GetActor()
     {
-        var httpContext = _httpContextAccessor.HttpContext;
+        var httpContext = httpContextAccessor.HttpContext;
 
         return new LogActorModel
         {
