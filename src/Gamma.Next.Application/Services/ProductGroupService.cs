@@ -11,7 +11,7 @@ using Gamma.Next.Application.Interfaces;
 namespace Gamma.Next.Application.Services;
 
 internal class ProductGroupService(
-    IUnitOfWorkFactory unitOfWorkFactory,
+    IExecuteHandlerService executeHandlerService,
     IDbConnectionFactory connectionFactory,
     ICommandHandler<AddProductGroupCommand, Guid> addHandler,
     ICommandHandler<EditProductGroupCommand, int> editHandler,
@@ -23,9 +23,8 @@ internal class ProductGroupService(
         ICommandHandler<EditProductGroupCommand, int>,
         EditProductGroupCommand,
         ICommandHandler<DeleteProductGroupCommand, int>,
-        DeleteProductGroupCommand>(unitOfWorkFactory, addHandler, editHandler, deleteHandler),
-    IProductGroupService,
-    IApplicationService
+        DeleteProductGroupCommand>(executeHandlerService, addHandler, editHandler, deleteHandler),
+    IProductGroupService
 {
     private readonly IDbConnectionFactory _connectionFactory = connectionFactory;
     private readonly IValidator<AddProductGroupCommand> _addValidator = addValidator;
@@ -42,7 +41,7 @@ internal class ProductGroupService(
 
     private async Task<Result<bool>> ValidateAsync(AddProductGroupCommand command, CancellationToken ct = default)
     {
-        // FluentValidation
+        //FluentValidation
         var result = await _addValidator.ValidateAsync(command, ct);
         if (!result.IsValid)
             return Result<bool>.Fail(result.Errors.Select(e => e.ErrorMessage));

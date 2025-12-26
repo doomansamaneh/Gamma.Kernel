@@ -1,4 +1,5 @@
 using Gamma.Kernel.Abstractions;
+using Gamma.Kernel.Behaviors;
 using Gamma.Kernel.Services;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -8,7 +9,10 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddKernel(this IServiceCollection services)
     {
+        services.AddSingleton<PermissionInterceptor>();
         services.AddScoped<IAuthorizationService, AuthorizationService>();
+        services.AddScoped<IExecuteHandlerService, BaseDomainCommandService>();
+
         return services;
     }
 }

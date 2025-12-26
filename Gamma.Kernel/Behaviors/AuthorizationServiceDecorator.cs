@@ -1,63 +1,45 @@
-using System.Reflection;
 using Gamma.Kernel.Abstractions;
-using Gamma.Kernel.Exceptions;
 using Gamma.Kernel.Security;
+using Gamma.Kernel.Models;
 
 namespace Gamma.Kernel.Behaviors;
 
-public class AuthorizationServiceDecorator<TService> : DispatchProxy
-    where TService : class, IApplicationService
+public class AuthorizationServiceDecorator(IExecuteHandlerService innerService
+    , IAuthorizationService authorizationService) : IExecuteHandlerService
 {
-    public TService Inner { get; set; } = default!;
-    public IAuthorizationService Authorization { get; set; } = default!;
-
-    protected override object? Invoke(MethodInfo? targetMethod, object?[]? args)
+    public async Task<Result<T>> ExecuteHandlerAsync<T>(Func<IUnitOfWork, Task<Result<T>>> action
+        , CancellationToken ct = default)
     {
-        if (targetMethod is null) throw new ArgumentNullException(nameof(targetMethod));
+        // Get the method that is being executed
+        var method = action.Method;
 
-        // Check permission attributes dynamically
-        var attrs = targetMethod.GetCustomAttributes<RequiresPermissionAttribute>(true)
-                    .Concat(targetMethod.DeclaringType!.GetCustomAttributes<RequiresPermissionAttribute>(true));
+        // Extract any permission attributes applied to the method
+        var permissionAttributes = method.GetCustomAttributes(typeof(RequiresPermissionAttribute), false)
+                                          .Cast<RequiresPermissionAttribute>()
+                                          .ToList();
 
-        foreach (var attr in attrs)
+        if (permissionAttributes.Count != 0)
         {
-            var allowed = Authorization.HasPermissionAsync(attr.Permission, attr.Resource)
-                .GetAwaiter().GetResult();
-            if (!allowed) throw new ForbiddenException(attr.Permission);
+            // Check if the user has the necessary permissions
+            foreach (var permission in permissionAttributes)
+            {
+                var hasPermission = await authorizationService.HasPermissionAsync(permission.Permission, ct);
+
+                if (!hasPermission)
+                {
+                    // If the user doesn't have permission, return Forbidden
+                    return Result<T>.Fail("Forbidden: You do not have permission to execute this action.");
+                }
+            }
         }
 
-        // Automatically call the original method
-        var result = targetMethod.Invoke(Inner, args);
+        // If permissions are valid or no permissions are needed, proceed with the action
+        var result = await innerService.ExecuteHandlerAsync(action, ct);
 
-        // Handle async return
-        if (result is Task task)
-        {
-            task.GetAwaiter().GetResult();
-            if (task.GetType().IsGenericType) return ((dynamic)task).Result;
-            return null;
-        }
+        // Optionally log the result after execution
+        Console.WriteLine($"Action result: {(result.Success ? "Success" : "Failure")}");
 
         return result;
     }
 }
 
-public class AuthorizationServiceDecorator_<TService>(TService inner, IAuthorizationService authorization)
-    : IApplicationService
-    where TService : class, IApplicationService
-{
-
-    public async Task<TResult> ExecuteAsync<TResult>(Func<Task<TResult>> action, MethodInfo methodInfo)
-    {
-        // Check RequiresPermission attributes
-        var attrs = methodInfo.GetCustomAttributes<RequiresPermissionAttribute>(true)
-                    .Concat(methodInfo.DeclaringType!.GetCustomAttributes<RequiresPermissionAttribute>(true));
-
-        foreach (var attr in attrs)
-        {
-            var allowed = await authorization.HasPermissionAsync(attr.Permission, attr.Resource);
-            if (!allowed) throw new ForbiddenException(attr.Permission);
-        }
-
-        return await action();
-    }
-}

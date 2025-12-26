@@ -4,11 +4,11 @@ using Gamma.Kernel.Models;
 
 namespace Gamma.Kernel.Services;
 
-public abstract class BaseDomainCommandService(IUnitOfWorkFactory unitOfWorkFactory)
+public class BaseDomainCommandService(IUnitOfWorkFactory unitOfWorkFactory) : IExecuteHandlerService
 {
     protected readonly IUnitOfWorkFactory _unitOfWorkFactory = unitOfWorkFactory;
 
-    protected async Task<Result<T>> ExecuteHandlerAsync<T>(Func<IUnitOfWork,
+    public virtual async Task<Result<T>> ExecuteHandlerAsync<T>(Func<IUnitOfWork,
         Task<Result<T>>> action,
         CancellationToken ct = default)
     {

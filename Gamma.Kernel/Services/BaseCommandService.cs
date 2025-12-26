@@ -10,10 +10,11 @@ public abstract class BaseCommandService<TAddCommandHandler,
     TEditCommand,
     TDeleteCommandHandler,
     TDeleteCommand>(
-        IUnitOfWorkFactory unitOfWorkFactory,
+        IExecuteHandlerService executeHandlerService,
         TAddCommandHandler addHandler,
         TEditCommandHandler editHandler,
-        TDeleteCommandHandler deleteHandler) : BaseDomainCommandService(unitOfWorkFactory)
+        TDeleteCommandHandler deleteHandler)
+    : IApplicationService //BaseDomainCommandService(unitOfWorkFactory)
     where TAddCommand : class
     where TEditCommand : class
     where TDeleteCommand : class
@@ -33,4 +34,9 @@ public abstract class BaseCommandService<TAddCommandHandler,
 
     public virtual Task<Result<int>> DeleteAsync(TDeleteCommand command, CancellationToken ct = default)
         => ExecuteHandlerAsync(uow => _deleteHandler.Handle(uow, command, ct), ct);
+
+    protected virtual Task<Result<T>> ExecuteHandlerAsync<T>(Func<IUnitOfWork, Task<Result<T>>> action, CancellationToken ct = default)
+    {
+        return executeHandlerService.ExecuteHandlerAsync(action, ct);
+    }
 }
