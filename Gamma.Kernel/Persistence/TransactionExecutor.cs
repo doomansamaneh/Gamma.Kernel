@@ -2,13 +2,13 @@
 using Gamma.Kernel.Abstractions;
 using Gamma.Kernel.Models;
 
-namespace Gamma.Kernel.Services;
+namespace Gamma.Kernel.Persistence;
 
-public class BaseDomainCommandService(IUnitOfWorkFactory unitOfWorkFactory) : IExecuteHandlerService
+public class TransactionExecutor(IUnitOfWorkFactory unitOfWorkFactory) : ITransactionExecutor
 {
     protected readonly IUnitOfWorkFactory _unitOfWorkFactory = unitOfWorkFactory;
 
-    public virtual async Task<Result<T>> ExecuteHandlerAsync<T>(Func<IUnitOfWork,
+    public virtual async Task<Result<T>> ExecuteAsync<T>(Func<IUnitOfWork,
         Task<Result<T>>> action,
         CancellationToken ct = default)
     {

@@ -1,7 +1,7 @@
 using System.Data;
 using Gamma.Kernel.Abstractions;
 
-namespace Gamma.Kernel.Data;
+namespace Gamma.Kernel.Persistence;
 
 public class DapperUnitOfWork : IUnitOfWork
 {

@@ -20,12 +20,18 @@ public static class DependencyInjection
 
         services.Scan(scan => scan
             .FromAssembliesOf(typeof(DependencyInjection))
+            .AddClasses(c => c.AssignableTo(typeof(ICommandService<,,,>)), publicOnly: false)
+            .AsImplementedInterfaces()
+            .WithScopedLifetime());
+
+        services.Scan(scan => scan
+            .FromAssembliesOf(typeof(DependencyInjection))
             .AddClasses(c => c.AssignableTo<IApplicationService>(), publicOnly: false)
             .AsImplementedInterfaces()
             .WithScopedLifetime());
 
         services.Decorate(typeof(ICommandHandler<,>), typeof(AuditingCommandHandlerDecorator<,>));
-        //services.Decorate<IExecuteHandlerService, AuditingServiceDecorator>();
+        services.Decorate(typeof(ICommandService<,,,>), typeof(CommandServiceAuthorizationDecorator<,,,>));
 
         return services;
     }

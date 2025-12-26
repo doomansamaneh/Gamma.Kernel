@@ -1,6 +1,6 @@
 using Gamma.Kernel.Abstractions;
 
-namespace Gamma.Kernel.Data;
+namespace Gamma.Kernel.Persistence;
 
 public sealed class DapperUnitOfWorkFactory(IDbConnectionFactory connectionFactory) : IUnitOfWorkFactory
 {

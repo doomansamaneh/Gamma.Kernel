@@ -1,5 +1,6 @@
 using Gamma.Kernel.Abstractions;
 using Gamma.Kernel.Data;
+using Gamma.Kernel.Persistence;
 using Gamma.Kernel.Services;
 using Gamma.Next.Infra.Data;
 using Gamma.Next.Infra.Logging;

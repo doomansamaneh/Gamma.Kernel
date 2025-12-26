@@ -4,10 +4,10 @@ using Gamma.Kernel.Models;
 
 namespace Gamma.Kernel.Behaviors;
 
-public class AuthorizationServiceDecorator(IExecuteHandlerService innerService
-    , IAuthorizationService authorizationService) : IExecuteHandlerService
+public class AuditingCommandServiceDecorator(ITransactionExecutor innerService
+    , IAuthorizationService authorizationService) : ITransactionExecutor
 {
-    public async Task<Result<T>> ExecuteHandlerAsync<T>(Func<IUnitOfWork, Task<Result<T>>> action
+    public async Task<Result<T>> ExecuteAsync<T>(Func<IUnitOfWork, Task<Result<T>>> action
         , CancellationToken ct = default)
     {
         // Get the method that is being executed
@@ -34,7 +34,7 @@ public class AuthorizationServiceDecorator(IExecuteHandlerService innerService
         }
 
         // If permissions are valid or no permissions are needed, proceed with the action
-        var result = await innerService.ExecuteHandlerAsync(action, ct);
+        var result = await innerService.ExecuteAsync(action, ct);
 
         // Optionally log the result after execution
         Console.WriteLine($"Action result: {(result.Success ? "Success" : "Failure")}");

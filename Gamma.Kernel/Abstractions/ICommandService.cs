@@ -1,6 +1,6 @@
 using Gamma.Kernel.Models;
 
-namespace Gamma.Next.Application.Interfaces;
+namespace Gamma.Kernel.Abstractions;
 
 public interface ICommandService<TAddEntityCommand, TEditEntityCommand, TDeleteEntityCommand, TKey>
 {
