@@ -7,7 +7,8 @@ using Gamma.Kernel.Models;
 public sealed class AuditingCommandHandlerDecorator<TCommand, TResult>(
     ICommandHandler<TCommand, TResult> inner,
     IAuditLogger audit,
-    ICurrentUser currentUser)
+    ICurrentUser currentUser,
+    ISystemClock systemClock)
     : ICommandHandler<TCommand, TResult>
 {
     public async Task<Result<TResult>> Handle(
@@ -29,7 +30,7 @@ public sealed class AuditingCommandHandlerDecorator<TCommand, TResult>(
                  EntityId = auditable.EntityId,
                  Action = auditable.Action,
                  Actor = currentUser.GetActor(),
-                 LogTime = DateTime.UtcNow,
+                 LogTime = systemClock.Now,
                  Before = auditable.Before,
                  After = auditable.After
              }, ct);

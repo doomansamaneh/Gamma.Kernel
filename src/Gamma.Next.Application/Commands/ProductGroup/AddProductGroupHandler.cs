@@ -3,17 +3,18 @@ using Gamma.Kernel.Models;
 
 namespace Gamma.Next.Application.Commands.ProductGroup;
 
-internal class AddProductGroupHandler(IRepository<Domain.Entities.ProductGroup> repository)
+internal class AddProductGroupHandler
+    (IRepository<Domain.Entities.ProductGroup> repository,
+    IUidGenerator uidGenerator)
     : ICommandHandler<AddProductGroupCommand, Guid>
 {
     public async Task<Result<Guid>> Handle(IUnitOfWork uow,
         AddProductGroupCommand command,
          CancellationToken ct = default)
     {
-        var Id = Guid.NewGuid();
         var entity = new Domain.Entities.ProductGroup
         {
-            Id = Id,
+            Id = uidGenerator.New(),
             Code = command.ProductGroup.Code,
             Title = command.ProductGroup.Title,
             Comment = command.ProductGroup.Comment,

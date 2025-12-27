@@ -11,8 +11,8 @@ public abstract class AuditableEntity : BaseEntity
     [InsertOnly]
     public DateTime DateCreated { get; set; }
 
-    public string? ModifiedBy { get; set; }
+    public string ModifiedBy { get; set; } = default!;
 
-    public DateTime? DateModified { get; set; }
+    public DateTime DateModified { get; set; }
 }
 

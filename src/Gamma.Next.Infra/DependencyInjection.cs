@@ -18,7 +18,6 @@ public static class DependencyInjection
         services.AddSingleton<IUnitOfWorkFactory, DapperUnitOfWorkFactory>();
         services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
         services.AddScoped<ICurrentUser, Identity.HttpCurrentUser>();
-        services.AddScoped<ISystemClock, SystemClockService>();
 
         // Configure Serilog
         Log.Logger = new LoggerConfiguration()

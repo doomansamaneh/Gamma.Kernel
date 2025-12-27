@@ -1,4 +1,5 @@
 using Gamma.Kernel.Abstractions;
+using Gamma.Next.Application.Commands.Person;
 using Gamma.Next.Application.Commands.ProductGroup;
 using Gamma.Next.Application.Commands.Shared;
 using Gamma.Next.Application.Interfaces;
@@ -68,6 +69,25 @@ public static class ProductGroupEndpoints
             var result = await service.AddAsync(command, ct);
             return result.Success
                     ? Results.Ok(new { Id = result.Data, command.ProductGroup.Code, command.ProductGroup.Title })
+                    : Results.BadRequest(result.Errors);
+        });
+
+        // test add service
+        app.MapGet("/test-person-add", async (
+                IPersonCommandService service,
+                CancellationToken ct) =>
+        {
+            var command = new AddPersonCommand(new PersonInput
+            {
+                NationalCode = "1000100001",
+                Name = "Korosh",
+                LastName = "Kheirandish",
+                IsActive = true
+            });
+
+            var result = await service.AddAsync(command, ct);
+            return result.Success
+                    ? Results.Ok(new { Id = result.Data, command.Person.NationalCode })
                     : Results.BadRequest(result.Errors);
         });
     }

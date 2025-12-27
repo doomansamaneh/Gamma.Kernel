@@ -13,11 +13,7 @@ public sealed class GenericRepository<TEntity>(
     ISystemClock clock) : IRepository<TEntity>
     where TEntity : BaseEntity, new()
 {
-    private readonly ICurrentUser _currentUser = currentUser ?? throw new ArgumentNullException(nameof(currentUser));
-    private readonly ISystemClock _clock = clock ?? throw new ArgumentNullException(nameof(clock));
-
     #region CUD Operations
-
     public async Task<TEntity> InsertAsync(IUnitOfWork uow, TEntity entity, CancellationToken ct = default)
     {
         ArgumentNullException.ThrowIfNull(entity);
@@ -74,8 +70,8 @@ public sealed class GenericRepository<TEntity>(
 
     private void SetAuditFields(TEntity entity, ChangeAction action)
     {
-        var actor = _currentUser.GetActor();
-        var now = _clock.UtcNow;
+        var actor = currentUser.GetActor();
+        var now = clock.Now;
 
         if (action == ChangeAction.Insert)
         {

@@ -3,10 +3,10 @@
   <ItemGroup>
     <ProjectReference Include="..\Gamma.Next.Domain\Gamma.Next.Domain.csproj" />
     <ProjectReference Include="..\..\Gamma.Kernel\Gamma.Kernel.csproj" />
+    <!-- <ProjectReference Include="..\Gamma.Next.ApplicationServiceGenerator\Gamma.Next.ApplicationServiceGenerator.csproj" /> -->
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Castle.Core" Version="5.2.1" />
     <PackageReference Include="FluentValidation" Version="12.1.1" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.1" />
@@ -17,6 +17,11 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
   </PropertyGroup>
 
 </Project>
