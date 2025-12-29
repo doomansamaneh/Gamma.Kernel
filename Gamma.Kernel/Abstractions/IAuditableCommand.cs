@@ -2,6 +2,11 @@ using Gamma.Kernel.Enums;
 
 namespace Gamma.Kernel.Abstractions;
 
+public interface ICommand
+{
+
+}
+
 public interface IAuditableCommand
 {
     AuditAction Action { get; }

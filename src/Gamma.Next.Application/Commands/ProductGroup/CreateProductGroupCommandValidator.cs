@@ -19,9 +19,9 @@ public class ProductGroupInputValidator : AbstractValidator<ProductGroupInput>
     }
 }
 
-public class AddProductGroupCommandValidator : AbstractValidator<AddProductGroupCommand>
+public class CreateProductGroupCommandValidator : AbstractValidator<CreateProductGroupCommand>
 {
-    public AddProductGroupCommandValidator()
+    public CreateProductGroupCommandValidator()
     {
         RuleFor(x => x.ProductGroup)
             .NotNull().WithMessage("ProductGroup must be provided")
@@ -29,9 +29,9 @@ public class AddProductGroupCommandValidator : AbstractValidator<AddProductGroup
     }
 }
 
-public class EditProductGroupCommandValidator : AbstractValidator<EditProductGroupCommand>
+public class UpdateProductGroupCommandValidator : AbstractValidator<UpdateProductGroupCommand>
 {
-    public EditProductGroupCommandValidator()
+    public UpdateProductGroupCommandValidator()
     {
         RuleFor(x => x.Id)
             .NotEmpty().WithMessage("Id is required for edit");

@@ -3,7 +3,7 @@ using Gamma.Kernel.Enums;
 
 namespace Gamma.Next.Application.Commands.ProductGroup;
 
-public record AddProductGroupCommand(ProductGroupInput ProductGroup) : IAuditableCommand
+public sealed record CreateProductGroupCommand(ProductGroupInput ProductGroup) : IAuditableCommand
 {
     public AuditAction Action => AuditAction.Create;
     public string EntityName => "Ast.ProductGroup";

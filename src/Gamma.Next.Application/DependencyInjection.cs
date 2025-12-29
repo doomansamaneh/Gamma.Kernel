@@ -2,6 +2,7 @@ using System.Reflection;
 using FluentValidation;
 using Gamma.Kernel.Abstractions;
 using Gamma.Kernel.Behaviors;
+using Gamma.Kernel.Commands;
 using Gamma.Kernel.Services;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -26,55 +27,11 @@ public static class DependencyInjection
                                     .Where(t => !t.IsAbstract), publicOnly: false)
                  .AsImplementedInterfaces()
                  .WithScopedLifetime()
-        //  .AddClasses(c => c.AssignableTo(typeof(ICommandService<,,,>)), publicOnly: false)
-        //  .AsImplementedInterfaces()
-        //  .WithScopedLifetime()
                 );
 
-        services.Decorate(typeof(ICommandHandler<,>), typeof(AuditingCommandHandlerDecorator<,>));
+        //services.Decorate(typeof(ICommandHandler<,>), typeof(AuditingCommandHandlerDecorator<,>));
         //services.Decorate(typeof(ICommandService<,,,>), typeof(CommandServiceAuthorizationDecorator<,,,>));
         services.DecorateProxies();
-        //services.AddGeneratedApplicationServices();
-
-        return services;
-    }
-
-    private static IServiceCollection AddGeneratedApplicationServices(this IServiceCollection services)
-    {
-        // پیدا کردن assembly که IApplicationService داخل آن است
-        var assembly = typeof(DependencyInjection).Assembly;
-
-        // همه interfaceهای IApplicationService
-        var interfaces = assembly.GetTypes()
-            .Where(t => t.IsInterface && typeof(IApplicationService).IsAssignableFrom(t))
-            .ToList();
-
-        foreach (var iface in interfaces)
-        {
-            // پیاده‌سازی واقعی (concrete class)
-            var impl = assembly.GetTypes()
-                .FirstOrDefault(t => t.IsClass && !t.IsAbstract && iface.IsAssignableFrom(t));
-
-            if (impl == null) continue;
-
-            // نام decorator generated
-            var decoratorName = $"{iface.Name}Decorator";
-
-            // پیدا کردن decorator type
-            var decoratorFullName = $"Gamma.Next.ApplicationServiceGenerator.{iface.Name}Decorator";
-            //var decoratorFullName = $"Gamma.Next.ApplicationServiceGenerator.{iface.Name}Decorator";
-            var decoratorType = assembly.GetTypes()
-                .FirstOrDefault(t => t.FullName == decoratorFullName);
-
-            if (decoratorType == null) continue;
-
-            // register اصلی
-            services.AddScoped(iface, sp =>
-            {
-                var inner = ActivatorUtilities.CreateInstance(sp, impl);
-                return ActivatorUtilities.CreateInstance(sp, decoratorType, inner);
-            });
-        }
 
         return services;
     }

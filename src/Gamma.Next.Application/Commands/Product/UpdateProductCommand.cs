@@ -1,20 +1,19 @@
 using Gamma.Kernel.Abstractions;
 using Gamma.Kernel.Enums;
 
-namespace Gamma.Next.Application.Commands.ProductGroup;
+namespace Gamma.Next.Application.Commands.Product;
 
-public class EditProductGroupCommand : IAuditableCommand
+public class UpdateProductCommand : IAuditableCommand
 {
     public Guid Id { get; set; }
     public long RecordVersion { get; set; }
-    public ProductGroupInput ProductGroup { get; set; } = new();
-
+    public ProductInput Product { get; set; } = new();
     public AuditAction Action => AuditAction.Update;
 
-    public string EntityName => "Ast.ProductGroup";
+    public string EntityName => "Ast.Product";
 
     public string EntityId => Id.ToString();
 
     public object? Before => null;
-    public object? After => ProductGroup;
+    public object? After => Product;
 }

@@ -57,7 +57,7 @@ public sealed class GenericRepository<TEntity>(
         return affected;
     }
 
-    public async Task<int> DeleteByIdAsync(IUnitOfWork uow, Guid id, CancellationToken ct = default)
+    public async Task<int> DeleteByIdAsync<TKey>(IUnitOfWork uow, TKey id, CancellationToken ct = default)
     {
         var sql = $"DELETE FROM {EntityPropertyCache<TEntity>.Instance.TableName} WHERE Id = @Id";
         var affected = await uow.Connection.ExecuteAsync(sql, new { Id = id }, uow.Transaction);

@@ -1,4 +1,5 @@
 using Gamma.Kernel.Abstractions;
+using Gamma.Kernel.Commands;
 using Gamma.Kernel.Infra;
 using Gamma.Kernel.Persistence;
 using Gamma.Kernel.Services;
@@ -13,9 +14,13 @@ public static class DependencyInjection
         services.AddSingleton<IUidGenerator, UidGenerator>();
         services.AddSingleton<ISystemClock, SystemClockService>();
 
-        //services.AddSingleton<PermissionInterceptor>();
         services.AddScoped<IAuthorizationService, AuthorizationService>();
         services.AddScoped<ITransactionExecutor, TransactionExecutor>();
+
+        // Register open-generic CRUD handlers
+        services.AddScoped(typeof(ICreateCommandHandler<>), typeof(CreateCommandHandler<>));
+        services.AddScoped(typeof(IUpdateCommandHandler<>), typeof(UpdateCommandHandler<>));
+        services.AddScoped(typeof(IDeleteCommandHandler<,>), typeof(DeleteCommandHandler<,>));
 
         return services;
     }

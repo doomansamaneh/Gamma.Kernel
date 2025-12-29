@@ -6,20 +6,20 @@ using Gamma.Kernel.Security;
 
 namespace Gamma.Kernel.Behaviors;
 
-public class CommandServiceAuthorizationDecorator<TAdd, TEdit, TDelete, TKey>(
-    ICommandService<TAdd, TEdit, TDelete, TKey> inner,
-    IAuthorizationService authorizationService) : ICommandService<TAdd, TEdit, TDelete, TKey>
+public class CommandServiceAuthorizationDecorator<TCreate, TUpdate, TDelete, TKey>(
+    ICommandService<TCreate, TUpdate, TDelete, TKey> inner,
+    IAuthorizationService authorizationService) : ICommandService<TCreate, TUpdate, TDelete, TKey>
 {
-    public async Task<Result<TKey>> AddAsync(TAdd command, CancellationToken ct = default)
+    public async Task<Result<TKey>> CreateAsync(TCreate command, CancellationToken ct = default)
     {
-        await EnsurePermissionAsync(GetPermission(nameof(AddAsync)) ?? InferDefaultPermission("add"), ct);
-        return await inner.AddAsync(command, ct);
+        await EnsurePermissionAsync(GetPermission(nameof(CreateAsync)) ?? InferDefaultPermission("create"), ct);
+        return await inner.CreateAsync(command, ct);
     }
 
-    public async Task<Result<int>> EditAsync(TEdit command, CancellationToken ct = default)
+    public async Task<Result<int>> UpdateAsync(TUpdate command, CancellationToken ct = default)
     {
-        await EnsurePermissionAsync(GetPermission(nameof(EditAsync)) ?? InferDefaultPermission("edit"), ct);
-        return await inner.EditAsync(command, ct);
+        await EnsurePermissionAsync(GetPermission(nameof(UpdateAsync)) ?? InferDefaultPermission("update"), ct);
+        return await inner.UpdateAsync(command, ct);
     }
 
     public async Task<Result<int>> DeleteAsync(TDelete command, CancellationToken ct = default)
@@ -51,9 +51,9 @@ public class CommandServiceAuthorizationDecorator<TAdd, TEdit, TDelete, TKey>(
 
     private static string InferDefaultPermission(string action)
     {
-        // Example: extract entity name from generic TAdd type
-        var entityName = typeof(TAdd).Name
-            .Replace("Add", "")
+        // Example: extract entity name from generic TCreate type
+        var entityName = typeof(TCreate).Name
+            .Replace("Create", "")
             .Replace("Command", "")
             .ToLowerInvariant();
 

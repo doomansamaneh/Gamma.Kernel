@@ -8,5 +8,5 @@ public interface IRepository<TEntity>
 {
     Task<TEntity> InsertAsync(IUnitOfWork uow, TEntity entity, CancellationToken ct = default);
     Task<int> UpdateAsync(IUnitOfWork uow, TEntity entity, CancellationToken ct = default);
-    Task<int> DeleteByIdAsync(IUnitOfWork uow, Guid id, CancellationToken ct = default);
+    Task<int> DeleteByIdAsync<TKey>(IUnitOfWork uow, TKey id, CancellationToken ct = default);
 }
