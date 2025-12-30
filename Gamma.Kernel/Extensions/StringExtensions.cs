@@ -101,39 +101,6 @@ public static class StringExtensions
 
     public static string ToShortTime(this TimeSpan time) => $"{time.Hours:D2}:{time.Minutes:D2}";
 
-    public static string ToSafeSqlField(this string? strInput)
-    {
-        if (string.IsNullOrEmpty(strInput)) return string.Empty;
-
-        var result = strInput.Replace(";", "")
-                             .Replace("--", "")
-                             .Replace("/*", "")
-                             .Replace("*/", "")
-                             .Replace("xp_", "")
-                             .Replace(" ", "")
-                             .Replace("[", "")
-                             .Replace("]", "");
-
-        if (result.Contains(','))
-        {
-            var fields = result.Split(',');
-            return string.Join(",", fields.Select(GetSafeSqlField));
-        }
-        else return GetSafeSqlField(result);
-    }
-
-    private static string GetSafeSqlField(string field)
-    {
-        if (string.IsNullOrWhiteSpace(field)) return string.Empty;
-
-        if (field.Contains('.'))
-        {
-            var parts = field.Split('.');
-            return $"[{parts[0]}].[{parts[1]}]".Replace("[*]", "*");
-        }
-        return $"[{field}]".Replace("[*]", "*");
-    }
-
     public static string ToCamelCase(this string? strInput) =>
         !string.IsNullOrEmpty(strInput) ? $"{char.ToLowerInvariant(strInput[0])}{strInput[1..]}" : strInput ?? string.Empty;
 
@@ -382,6 +349,44 @@ public static class StringExtensions
         writer.Flush();
         stream.Position = 0;
         return stream;
+    }
+
+    public static string ToSafeSqlField(this string strInput)
+    {
+        if (string.IsNullOrEmpty(strInput))
+            return strInput;
+
+        // Remove dangerous characters
+        var result = strInput.Replace(";", "")
+                             //.Replace(",", "")
+                             .Replace("--", "")
+                             .Replace("/*", "")
+                             .Replace("*/", "")
+                             .Replace("xp_", "", StringComparison.OrdinalIgnoreCase)
+                             .Replace(" ", "")
+                             .Replace("[", "")
+                             .Replace("]", "");
+
+        // Handle comma-separated fields
+        var fields = result.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                           .Select(GetSafeSqlField);
+
+        return string.Join(",", fields);
+    }
+
+    private static string GetSafeSqlField(string field)
+    {
+        if (string.IsNullOrWhiteSpace(field))
+            return field;
+
+        // Handle table alias
+        if (field.Contains('.'))
+        {
+            var parts = field.Split('.');
+            return $"[{parts[0]}].[{parts[1]}]".Replace("[*]", "*");
+        }
+
+        return $"[{field}]".Replace("[*]", "*");
     }
 
     public static string ToTimeString(this int number) => $"{number / 60}:{number % 60}";

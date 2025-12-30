@@ -17,11 +17,11 @@ internal class ProductGroupCommandService(
         ITransactionExecutor transactionExecutor,
         IDbConnectionFactory connectionFactory,
 
+        // todo: how to avoid constructor explosion? lazy loading?, resolver pattern?
         // Generic handlers
         ICreateCommandHandler<Domain.Entities.ProductGroup> addGroupHandler,
         IUpdateCommandHandler<Domain.Entities.ProductGroup> updateGroupHandler,
         IDeleteCommandHandler<Domain.Entities.ProductGroup, Guid> deleteGroupHandler,
-
         ICreateCommandHandler<Domain.Entities.Product> addProductHandler,
         IUpdateCommandHandler<Domain.Entities.Product> updateProductHandler,
         IDeleteCommandHandler<Domain.Entities.Product, Guid> deleteProductHandler,
@@ -123,6 +123,8 @@ internal class ProductGroupCommandService(
         return Result<bool>.Ok(true);
     }
 }
+
+//todo: use dynamic mapping tool like AutoMapper
 internal static class ProductGroupCommandExtensions
 {
     public static Domain.Entities.ProductGroup ToEntity(this ProductGroupInput input, Guid? id = null) =>

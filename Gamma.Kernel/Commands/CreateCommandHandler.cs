@@ -19,4 +19,3 @@ public class CreateCommandHandler<TEntity>(IRepository<TEntity> repository, IUid
         return Result<Guid>.Ok(entity.Id);
     }
 }
-

@@ -78,3 +78,27 @@ public enum AuditAction
     Delete,
     Read
 }
+
+public enum SortOrder
+{
+    Ascending = 1,
+    Descending = 2
+}
+
+public enum SqlOperator
+{
+    Equal = 1,
+    NotEqual = 2,
+    Contains = 3,
+    NotContains = 4,
+    LessThan = 5,
+    LessThanOrEqual = 6,
+    GreaterThan = 7,
+    GreaterThanOrEqual = 8,
+    In = 9,
+    NotIn = 10,
+    StartWith = 11,
+    IsNull = 12,
+    IsNotNull = 13,
+    None = 99,
+}
