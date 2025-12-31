@@ -29,6 +29,13 @@ public static class DependencyInjection
                  .WithScopedLifetime()
                 );
 
+        services.Scan(scan => scan
+                .FromAssembliesOf(typeof(DependencyInjection))
+                .AddClasses(c => c.AssignableTo(typeof(IQueryHandler<,>)), publicOnly: false)
+                .AsImplementedInterfaces()
+                .WithScopedLifetime()
+            );
+
         //services.Decorate(typeof(ICommandHandler<,>), typeof(AuditingCommandHandlerDecorator<,>));
         //services.Decorate(typeof(ICommandService<,,,>), typeof(CommandServiceAuthorizationDecorator<,,,>));
         services.DecorateProxies();

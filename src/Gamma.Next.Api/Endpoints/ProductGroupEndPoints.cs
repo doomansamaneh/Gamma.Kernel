@@ -1,6 +1,11 @@
+using Gamma.Kernel.Abstractions;
+using Gamma.Kernel.Enums;
+using Gamma.Kernel.Paging;
 using Gamma.Next.Application.Commands.Product;
 using Gamma.Next.Application.Commands.ProductGroup;
+using Gamma.Next.Application.DTOs;
 using Gamma.Next.Application.Interfaces;
+using Gamma.Next.Application.Queries.ProductGroup;
 
 namespace Gamma.Next.Api.Endpoints;
 
@@ -51,7 +56,7 @@ public static class ProductGroupEndpoints
         // });
 
         // test add service
-        app.MapGet("/test-product-groups", async (
+        app.MapGet("/test-add-pg", async (
                 IProductGroupCommandService service,
                 CancellationToken ct) =>
         {
@@ -83,6 +88,27 @@ public static class ProductGroupEndpoints
             return result.Success
                     ? Results.Ok(new { Id = result.Data, command.ProductGroup.Code, command.ProductGroup.Title })
                     : Results.BadRequest(result.Errors);
+        });
+
+        app.MapGet("/test-get-pg", async (
+                IQueryHandler<GetProductGroupsQuery, PagedResult<ProductGroupDto>> handler,
+                CancellationToken ct) =>
+        {
+            var pageModel = new PageModel<ProductGroupSearch>
+            {
+                Page = 1,
+                PageSize = 10,
+                SearchTerm = null,
+                SortBy = "Id",
+                SortOrder = SortOrder.Descending,
+                Search = new ProductGroupSearch("PG00", null, null)
+            };
+
+            var query = new GetProductGroupsQuery(pageModel);
+
+            var result = await handler.HandleAsync(query, ct);
+
+            return Results.Ok(result);
         });
     }
 }

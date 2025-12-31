@@ -109,9 +109,6 @@ internal class ProductGroupCommandService(
 
         // 2️⃣ Database check for uniqueness
         using var db = connectionFactory.CreateConnection();
-        if (db.State != System.Data.ConnectionState.Open)
-            db.Open();
-
         var query = SQL.Select("count(1)")
                        .From("Ast.ProductGroup")
                        .Where("Code = @Code");

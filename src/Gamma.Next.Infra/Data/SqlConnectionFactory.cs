@@ -7,7 +7,13 @@ namespace Gamma.Next.Infra.Data;
 
 internal sealed class SqlConnectionFactory(IConfiguration configuration) : IDbConnectionFactory
 {
-    private readonly string _connectionString = configuration.GetConnectionString("Default")!;
+    private readonly string _connectionString = configuration.GetConnectionString("Default")
+            ?? throw new InvalidOperationException("Connection string 'Default' is not configured.");
 
-    public IDbConnection CreateConnection() => new SqlConnection(_connectionString);
+    public IDbConnection CreateConnection()
+    {
+        var connection = new SqlConnection(_connectionString);
+        connection.Open();
+        return connection;
+    }
 }
