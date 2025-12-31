@@ -8,7 +8,7 @@ public class DeleteCommandHandler<TEntity, TKey>(IRepository<TEntity> repository
     : IDeleteCommandHandler<TEntity, TKey>
     where TEntity : BaseEntity
 {
-    public async Task<Result<int>> Handle(
+    public async Task<Result<int>> HandleAsync(
         IUnitOfWork uow,
         GenericDeleteCommand<TEntity, TKey> command,
         CancellationToken ct = default)

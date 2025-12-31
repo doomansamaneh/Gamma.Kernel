@@ -11,12 +11,12 @@ public sealed class AuditingCommandHandlerDecorator<TCommand, TResult>(
     ISystemClock systemClock)
     : ICommandHandler<TCommand, TResult>
 {
-    public async Task<Result<TResult>> Handle(
+    public async Task<Result<TResult>> HandleAsync(
         IUnitOfWork uow,
         TCommand command,
         CancellationToken ct)
     {
-        var result = await inner.Handle(uow, command, ct);
+        var result = await inner.HandleAsync(uow, command, ct);
         //Audit ONLY on success
         if (!result.Success) return result;
         if (command is not IAuditableCommand auditable)

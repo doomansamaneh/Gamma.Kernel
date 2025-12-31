@@ -6,7 +6,6 @@ namespace Gamma.Kernel.Entities;
 public abstract class ConcurrencyEntity : AuditableEntity
 {
     [RowVersion]
-    [Computed]
-    public int RowVersion { get; set; } = default!;
+    public long RowVersion { get; set; } = 1;
 }
 

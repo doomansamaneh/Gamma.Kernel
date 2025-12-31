@@ -8,7 +8,7 @@ public class CreateCommandHandler<TEntity>(IRepository<TEntity> repository, IUid
     : ICreateCommandHandler<TEntity>
     where TEntity : BaseEntity
 {
-    public async Task<Result<Guid>> Handle(IUnitOfWork uow, GenericCreateCommand<TEntity> command, CancellationToken ct = default)
+    public async Task<Result<Guid>> HandleAsync(IUnitOfWork uow, GenericCreateCommand<TEntity> command, CancellationToken ct = default)
     {
         var entity = command.Entity;
 

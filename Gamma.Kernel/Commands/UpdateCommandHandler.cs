@@ -8,7 +8,7 @@ public class UpdateCommandHandler<TEntity>(IRepository<TEntity> repository)
     : IUpdateCommandHandler<TEntity>
     where TEntity : BaseEntity
 {
-    public async Task<Result<int>> Handle(
+    public async Task<Result<int>> HandleAsync(
         IUnitOfWork uow,
         GenericUpdateCommand<TEntity> command,
         CancellationToken ct = default)

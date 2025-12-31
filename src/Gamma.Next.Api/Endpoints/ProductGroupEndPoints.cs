@@ -90,6 +90,29 @@ public static class ProductGroupEndpoints
                     : Results.BadRequest(result.Errors);
         });
 
+        // test add service
+        app.MapGet("/test-update-pg", async (
+                IProductGroupCommandService service,
+                CancellationToken ct) =>
+        {
+            var command = new UpdateProductGroupCommand(new ProductGroupInput
+            {
+                Code = "t001",
+                Title = "Test Product Group",
+                Comment = "This is a test product group",
+                IsActive = true,
+            })
+            {
+                Id = new("019B74F7-84D6-7741-B1A3-433144D33679"),
+                RowVersion = 1
+            };
+
+            var result = await service.UpdateAsync(command, ct);
+            return result.Success
+                    ? Results.Ok(new { Id = result.Data, command.ProductGroup.Code, command.ProductGroup.Title })
+                    : Results.BadRequest(result.Errors);
+        });
+
         app.MapGet("/test-get-pg", async (
                 IQueryHandler<GetProductGroupsQuery, PagedResult<ProductGroupDto>> handler,
                 CancellationToken ct) =>

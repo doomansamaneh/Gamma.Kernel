@@ -46,7 +46,7 @@ internal class ProductGroupCommandService(
         {
             // 2a Add ProductGroup
             var createGroupCommand = new GenericCreateCommand<Domain.Entities.ProductGroup>(command.ProductGroup.ToEntity());
-            var groupResult = await addGroupHandler.Handle(uow, createGroupCommand, ct);
+            var groupResult = await addGroupHandler.HandleAsync(uow, createGroupCommand, ct);
             if (!groupResult.Success)
                 return Result<Guid>.Fail(groupResult.Errors, groupResult.Message);
 
@@ -57,7 +57,7 @@ internal class ProductGroupCommandService(
             {
                 var createProductCommand = new GenericCreateCommand<Domain.Entities.Product>(item.ToEntity(productGroupId));
 
-                var productResult = await addProductHandler.Handle(uow, createProductCommand, ct);
+                var productResult = await addProductHandler.HandleAsync(uow, createProductCommand, ct);
                 if (!productResult.Success)
                     return Result<Guid>.Fail(productResult.Errors, productResult.Message);
             }
@@ -71,9 +71,9 @@ internal class ProductGroupCommandService(
     [RequiresPermission("ast.product-group.edit")]
     public async Task<Result<int>> UpdateAsync(UpdateProductGroupCommand command, CancellationToken ct = default)
     {
-        var updateCommand = new GenericUpdateCommand<Domain.Entities.ProductGroup>(command.ProductGroup.ToEntity(command.Id));
+        var updateCommand = new GenericUpdateCommand<Domain.Entities.ProductGroup>(command.ToEntity());
 
-        return await ExecuteHandlerAsync(uow => updateGroupHandler.Handle(uow, updateCommand, ct), ct: ct);
+        return await ExecuteHandlerAsync(uow => updateGroupHandler.HandleAsync(uow, updateCommand, ct), ct: ct);
     }
 
     [RequiresPermission("ast.product-group.delete")]
@@ -89,7 +89,7 @@ internal class ProductGroupCommandService(
 
             // Delete ProductGroup
             var deleteGroupCommand = new GenericDeleteCommand<Domain.Entities.ProductGroup, Guid>(command.Id);
-            var groupResult = await deleteGroupHandler.Handle(uow, deleteGroupCommand, ct);
+            var groupResult = await deleteGroupHandler.HandleAsync(uow, deleteGroupCommand, ct);
             if (!groupResult.Success)
                 return Result<int>.Fail(groupResult.Errors, groupResult.Message);
 
@@ -120,9 +120,17 @@ internal class ProductGroupCommandService(
     }
 }
 
-//todo: use dynamic mapping tool like AutoMapper
+//todo: use dynamic mapping tools like AutoMapper
 internal static class ProductGroupCommandExtensions
 {
+    public static Domain.Entities.ProductGroup ToEntity(this UpdateProductGroupCommand command)
+    {
+        var entity = command.ProductGroup.ToEntity();
+        entity.Id = command.Id;
+        entity.RowVersion = command.RowVersion;
+        return entity;
+    }
+
     public static Domain.Entities.ProductGroup ToEntity(this ProductGroupInput input, Guid? id = null) =>
         new()
         {
@@ -130,7 +138,7 @@ internal static class ProductGroupCommandExtensions
             Code = input.Code,
             Title = input.Title,
             Comment = input.Comment,
-            IsActive = input.IsActive
+            IsActive = input.IsActive,
         };
 
     public static Domain.Entities.Product ToEntity(this ProductInput input, Guid productGroupId, Guid? id = null) =>
