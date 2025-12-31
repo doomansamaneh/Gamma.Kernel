@@ -153,17 +153,9 @@ public sealed class SqlBuilder
     #endregion
 }
 
-internal sealed class ClauseBuffer
+internal sealed class ClauseBuffer(string prefix, string? separator)
 {
-    private readonly string _prefix;
-    private readonly string? _separator;
     private readonly List<string> _items = [];
-
-    public ClauseBuffer(string prefix, string? separator)
-    {
-        _prefix = prefix;
-        _separator = separator;
-    }
 
     public void Append(string sql) => _items.Add(sql);
 
@@ -173,11 +165,11 @@ internal sealed class ClauseBuffer
     public string Build()
         => _items.Count == 0
             ? string.Empty
-            : _prefix + string.Join(_separator ?? string.Empty, _items);
+            : prefix + string.Join(separator ?? string.Empty, _items);
 
     public ClauseBuffer Clone()
     {
-        var clone = new ClauseBuffer(_prefix, _separator);
+        var clone = new ClauseBuffer(prefix, separator);
         clone._items.AddRange(_items);
         return clone;
     }

@@ -13,6 +13,7 @@ public sealed class GenericRepository<TEntity>(
     ISystemClock clock) : IRepository<TEntity>
     where TEntity : BaseEntity, new()
 {
+    private const string ID_FIELD = "Id";
     #region CUD Operations
     public async Task<TEntity> InsertAsync(IUnitOfWork uow, TEntity entity, CancellationToken ct = default)
     {
@@ -21,13 +22,26 @@ public sealed class GenericRepository<TEntity>(
         entity.NormalizeStringProperties();
         SetAuditFields(entity, ChangeAction.Insert);
 
-        var props = EntityPropertyCache<TEntity>.Instance.InsertableProperties;
-        var columns = string.Join(",", props.Select(p => p.Name));
+        var dialect = SqlDialectResolver.Resolve(uow.Connection);
+        var cache = EntityPropertyCache<TEntity>.Instance;
+        var props = cache.InsertableProperties;
+        var columns = string.Join(",", props.Select(p => dialect.EscapeIdentifier(p.Name)));
         var parameters = string.Join(",", props.Select(p => "@" + p.Name));
 
-        var sql = $"INSERT INTO {EntityPropertyCache<TEntity>.Instance.TableName} ({columns}) VALUES ({parameters})";
+        var tableName = GetTableName(dialect);
+        var sql = $"INSERT INTO {tableName} ({columns}) VALUES ({parameters})";
 
-        await uow.Connection.ExecuteAsync(sql, entity, uow.Transaction);
+        if (cache.IdentityProperty is not null)
+        {
+            sql = $"{sql} {dialect.GetLastInsertIdSql()}";
+            var id = await uow.Connection.ExecuteScalarAsync(sql, entity, uow.Transaction, dialect.DefaultCommandTimeout);
+            entity.SetPropertyValue(cache.IdentityProperty.Name, id);
+            //cache.IdentityProperty.SetValue(entity, Convert.ChangeType(id, cache.IdentityProperty.PropertyType));
+        }
+        else
+        {
+            await uow.Connection.ExecuteAsync(sql, entity, uow.Transaction, dialect.DefaultCommandTimeout);
+        }
 
         return entity;
     }
@@ -39,19 +53,21 @@ public sealed class GenericRepository<TEntity>(
         entity.NormalizeStringProperties();
         SetAuditFields(entity, ChangeAction.Update);
 
+        var dialect = SqlDialectResolver.Resolve(uow.Connection);
         var props = EntityPropertyCache<TEntity>.Instance.UpdatableProperties;
-        var setClause = string.Join(",", props.Select(p => $"{p.Name} = @{p.Name}"));
+        var setClause = string.Join(",", props.Select(p => $"{dialect.EscapeIdentifier(p.Name)} = @{p.Name}"));
 
-        var sql = $"UPDATE {EntityPropertyCache<TEntity>.Instance.TableName} SET {setClause} WHERE Id = @Id";
+        var tableName = GetTableName(dialect);
+        var sql = $"UPDATE {tableName} SET {setClause} WHERE {dialect.EscapeIdentifier(ID_FIELD)} = @Id";
 
         // Handle RowVersion for concurrency
         var rowVersionProp = EntityPropertyCache<TEntity>.Instance.RowVersionProperty;
         if (rowVersionProp != null)
         {
-            sql += $" AND {rowVersionProp.Name} = @{rowVersionProp.Name}";
+            sql += $" AND {dialect.EscapeIdentifier(rowVersionProp.Name)} = @{rowVersionProp.Name}";
         }
 
-        var affected = await uow.Connection.ExecuteAsync(sql, entity, uow.Transaction);
+        var affected = await uow.Connection.ExecuteAsync(sql, entity, uow.Transaction, dialect.DefaultCommandTimeout);
         if (affected == 0) throw new DBConcurrencyException("Entity update failed due to concurrency violation.");
 
         return affected;
@@ -59,8 +75,10 @@ public sealed class GenericRepository<TEntity>(
 
     public async Task<int> DeleteByIdAsync<TKey>(IUnitOfWork uow, TKey id, CancellationToken ct = default)
     {
-        var sql = $"DELETE FROM {EntityPropertyCache<TEntity>.Instance.TableName} WHERE Id = @Id";
-        var affected = await uow.Connection.ExecuteAsync(sql, new { Id = id }, uow.Transaction);
+        var dialect = SqlDialectResolver.Resolve(uow.Connection);
+        var tableName = GetTableName(dialect);
+        var sql = $"DELETE FROM {tableName} WHERE ${dialect.EscapeIdentifier(ID_FIELD)} = @Id";
+        var affected = await uow.Connection.ExecuteAsync(sql, new { Id = id }, uow.Transaction, dialect.DefaultCommandTimeout);
         return affected;
     }
 
@@ -82,6 +100,15 @@ public sealed class GenericRepository<TEntity>(
         }
 
         entity.LogModifiedBy(actor, now);
+    }
+
+    private static string GetTableName(ISqlDialect dialect)
+    {
+        var tableName = EntityPropertyCache<TEntity>.Instance.TableName;
+        var escapedTableName = tableName.Contains('.')
+            ? string.Join(".", tableName.Split('.').Select(p => dialect.EscapeIdentifier(p)))
+            : dialect.EscapeIdentifier(tableName);
+        return escapedTableName;
     }
 
     #endregion

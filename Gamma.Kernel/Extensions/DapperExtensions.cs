@@ -1,6 +1,5 @@
 using Dapper;
 using System.Data;
-using System.Text;
 using Gamma.Kernel.Enums;
 using Gamma.Kernel.Paging;
 using Gamma.Kernel.Dapper;
@@ -23,11 +22,12 @@ public static class DapperExtensions
         ArgumentNullException.ThrowIfNull(page);
 
         page.Normalize();
+        var dialect = SqlDialectResolver.Resolve(connection);
 
         // ---------- ORDER BY ----------
         var orderBy = !string.IsNullOrWhiteSpace(page.SortBy)
-            ? page.SortBy.ToSafeSqlField()
-            : "[Id]";
+            ? dialect.EscapeIdentifier(page.SortBy.ToSafeSqlField())
+            : dialect.EscapeIdentifier("Id");
 
         if (page.SortOrder == SortOrder.Descending)
             orderBy += " DESC";
@@ -57,8 +57,6 @@ public static class DapperExtensions
         }
 
         // ---------- DATA ----------
-        var dialect = SqlPagingDialectResolver.Resolve(connection);
-
         var dataSql = dialect.ApplyPaging(
             builder.ToString(),
             orderBy,

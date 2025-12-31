@@ -15,6 +15,7 @@ public class EntityPropertyCache<TEntity>
     public PropertyInfo[] AllProperties { get; }
     public PropertyInfo[] InsertableProperties { get; }
     public PropertyInfo[] UpdatableProperties { get; }
+    public PropertyInfo? IdentityProperty { get; }
     public PropertyInfo? RowVersionProperty { get; }
 
     public string TableName { get; }
@@ -35,6 +36,7 @@ public class EntityPropertyCache<TEntity>
             .Where(p => p.GetCustomAttribute<ComputedAttribute>() is null)
             .Where(p => p.GetCustomAttribute<IdentityAttribute>() is null)];
 
+        IdentityProperty = AllProperties.FirstOrDefault(p => p.GetCustomAttribute<IdentityAttribute>() is not null);
         RowVersionProperty = AllProperties.FirstOrDefault(p => p.GetCustomAttribute<RowVersionAttribute>() is not null);
 
         // Table name with optional schema

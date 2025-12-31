@@ -358,7 +358,7 @@ public static class StringExtensions
 
         // Remove dangerous characters
         var result = strInput.Replace(";", "")
-                             //.Replace(",", "")
+                             .Replace(",", "")
                              .Replace("--", "")
                              .Replace("/*", "")
                              .Replace("*/", "")
@@ -368,25 +368,10 @@ public static class StringExtensions
                              .Replace("]", "");
 
         // Handle comma-separated fields
-        var fields = result.Split(',', StringSplitOptions.RemoveEmptyEntries)
-                           .Select(GetSafeSqlField);
-
-        return string.Join(",", fields);
-    }
-
-    private static string GetSafeSqlField(string field)
-    {
-        if (string.IsNullOrWhiteSpace(field))
-            return field;
-
-        // Handle table alias
-        if (field.Contains('.'))
-        {
-            var parts = field.Split('.');
-            return $"[{parts[0]}].[{parts[1]}]".Replace("[*]", "*");
-        }
-
-        return $"[{field}]".Replace("[*]", "*");
+        // var fields = result.Split(',', StringSplitOptions.RemoveEmptyEntries)
+        //                    .Select(GetSafeSqlField);
+        //return string.Join(",", fields);
+        return result;
     }
 
     public static string ToTimeString(this int number) => $"{number / 60}:{number % 60}";

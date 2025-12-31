@@ -61,12 +61,14 @@ GO
 ```
 
 2. **Check appSettings.json**
-   
+
    Open appsettings.json file and check connection string.
 
 3. **Run script in database**
-   
+
    Open db-script.sql and run it in [gamma-next] database.
+
+---
 
 ## Roadmap (High Level)
 
@@ -107,4 +109,3 @@ GO
   └─ MyApp.Api
       ├─ EndPoints
 ```
-
