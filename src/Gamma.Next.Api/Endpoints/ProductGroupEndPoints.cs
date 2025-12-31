@@ -2,10 +2,10 @@ using Gamma.Kernel.Abstractions;
 using Gamma.Kernel.Enums;
 using Gamma.Kernel.Paging;
 using Gamma.Next.Application.Commands.Product;
-using Gamma.Next.Application.Commands.ProductGroup;
-using Gamma.Next.Application.DTOs;
-using Gamma.Next.Application.Interfaces;
-using Gamma.Next.Application.Queries.ProductGroup;
+using Gamma.Next.Application.ProductGroup;
+using Gamma.Next.Application.ProductGroup.Commands;
+using Gamma.Next.Application.ProductGroup.Dtos;
+using Gamma.Next.Application.ProductGroup.Queries;
 
 namespace Gamma.Next.Api.Endpoints;
 

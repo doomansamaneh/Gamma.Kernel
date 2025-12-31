@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace Gamma.Next.Application.Commands.ProductGroup;
+namespace Gamma.Next.Application.ProductGroup.Commands;
 
 public class ProductGroupInputValidator : AbstractValidator<ProductGroupInput>
 {

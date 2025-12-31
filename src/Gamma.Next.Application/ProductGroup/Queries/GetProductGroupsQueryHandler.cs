@@ -2,11 +2,11 @@ using Gamma.Kernel.Abstractions;
 using Gamma.Kernel.Dapper;
 using Gamma.Kernel.Extensions;
 using Gamma.Kernel.Paging;
-using Gamma.Next.Application.DTOs;
+using Gamma.Next.Application.ProductGroup.Dtos;
 
-namespace Gamma.Next.Application.Queries.ProductGroup;
+namespace Gamma.Next.Application.ProductGroup.Queries;
 
-public sealed class GetProductGroupsQueryHandler(IDbConnectionFactory connectionFactory)
+internal sealed class GetProductGroupsQueryHandler(IDbConnectionFactory connectionFactory)
         : IQueryHandler<GetProductGroupsQuery, PagedResult<ProductGroupDto>>
 {
     public async Task<PagedResult<ProductGroupDto>> HandleAsync(

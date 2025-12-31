@@ -38,7 +38,7 @@ public static class DapperExtensions
 
         var totalItems = await connection.ExecuteScalarAsync<long>(
             new CommandDefinition(
-                countSql,
+                countSql.NormalizeWhiteSpace(),
                 countBuilder.Parameters,
                 transaction,
                 commandTimeout,
@@ -72,7 +72,7 @@ public static class DapperExtensions
 
         var items = (await connection.QueryAsync<T>(
             new CommandDefinition(
-                dataSql,
+                dataSql.NormalizeWhiteSpace(),
                 parameters,
                 transaction,
                 commandTimeout,

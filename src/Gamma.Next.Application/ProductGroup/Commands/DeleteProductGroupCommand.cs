@@ -1,8 +1,7 @@
 using Gamma.Kernel.Abstractions;
-using Gamma.Kernel.Commands;
 using Gamma.Kernel.Enums;
 
-namespace Gamma.Next.Application.Commands.ProductGroup;
+namespace Gamma.Next.Application.ProductGroup.Commands;
 
 public class DeleteProductGroupCommand : IAuditableCommand
 {

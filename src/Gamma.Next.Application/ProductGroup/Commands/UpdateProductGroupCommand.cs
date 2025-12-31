@@ -1,7 +1,7 @@
 using Gamma.Kernel.Abstractions;
 using Gamma.Kernel.Enums;
 
-namespace Gamma.Next.Application.Commands.ProductGroup;
+namespace Gamma.Next.Application.ProductGroup.Commands;
 
 public sealed record UpdateProductGroupCommand(ProductGroupInput ProductGroup) : IAuditableCommand
 {

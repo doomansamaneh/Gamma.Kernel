@@ -7,10 +7,9 @@ using Gamma.Kernel.Models;
 using Gamma.Kernel.Security;
 using Gamma.Kernel.Services;
 using Gamma.Next.Application.Commands.Product;
-using Gamma.Next.Application.Commands.ProductGroup;
-using Gamma.Next.Application.Interfaces;
+using Gamma.Next.Application.ProductGroup.Commands;
 
-namespace Gamma.Next.Application.Services;
+namespace Gamma.Next.Application.ProductGroup;
 
 internal class ProductGroupCommandService(
         IAuthorizationService authorizationService,
