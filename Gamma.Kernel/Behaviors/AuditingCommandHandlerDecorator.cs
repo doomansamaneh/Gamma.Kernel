@@ -1,8 +1,8 @@
-namespace Gamma.Kernel.Behaviors;
-
 using Gamma.Kernel.Abstractions;
 using Gamma.Kernel.Entities;
 using Gamma.Kernel.Models;
+
+namespace Gamma.Kernel.Behaviors;
 
 public sealed class AuditingCommandHandlerDecorator<TCommand, TResult>(
     ICommandHandler<TCommand, TResult> inner,

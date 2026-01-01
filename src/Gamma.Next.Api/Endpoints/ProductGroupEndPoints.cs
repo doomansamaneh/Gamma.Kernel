@@ -114,7 +114,7 @@ public static class ProductGroupEndpoints
         });
 
         app.MapGet("/test-get-pg", async (
-                IQueryHandler<GetProductGroupsQuery, PagedResult<ProductGroupDto>> handler,
+                IQueryHandler<GetProductGroupQuery, PagedResult<ProductGroupDto>> handler,
                 CancellationToken ct) =>
         {
             var pageModel = new PageModel<ProductGroupSearch>
@@ -127,7 +127,7 @@ public static class ProductGroupEndpoints
                 Search = new ProductGroupSearch("PG00", null, null)
             };
 
-            var query = new GetProductGroupsQuery(pageModel);
+            var query = new GetProductGroupQuery(pageModel);
 
             var result = await handler.HandleAsync(query, ct);
 

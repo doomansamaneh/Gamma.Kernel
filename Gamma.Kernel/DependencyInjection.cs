@@ -17,10 +17,10 @@ public static class DependencyInjection
         services.AddScoped<IAuthorizationService, AuthorizationService>();
         services.AddScoped<ITransactionExecutor, TransactionExecutor>();
 
-        // Register open-generic CRUD handlers
-        services.AddScoped(typeof(ICreateCommandHandler<>), typeof(CreateCommandHandler<>));
-        services.AddScoped(typeof(IUpdateCommandHandler<>), typeof(UpdateCommandHandler<>));
-        services.AddScoped(typeof(IDeleteCommandHandler<,>), typeof(DeleteCommandHandler<,>));
+        // Register open-generic CUD handlers
+        services.AddScoped(typeof(ICreateCommandHandler<>), typeof(GenericCreateCommandHandler<>));
+        services.AddScoped(typeof(IUpdateCommandHandler<>), typeof(GenericUpdateCommandHandler<>));
+        services.AddScoped(typeof(IDeleteCommandHandler<,>), typeof(GenericDeleteCommandHandler<,>));
 
         return services;
     }

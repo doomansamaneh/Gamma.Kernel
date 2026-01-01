@@ -4,16 +4,17 @@ using Gamma.Kernel.Models;
 
 namespace Gamma.Kernel.Commands;
 
-public class DeleteCommandHandler<TEntity, TKey>(IRepository<TEntity> repository)
-    : IDeleteCommandHandler<TEntity, TKey>
+public class GenericUpdateCommandHandler<TEntity>(IRepository<TEntity> repository)
+    : IUpdateCommandHandler<TEntity>
     where TEntity : BaseEntity
 {
     public async Task<Result<int>> HandleAsync(
         IUnitOfWork uow,
-        GenericDeleteCommand<TEntity, TKey> command,
+        GenericUpdateCommand<TEntity> command,
         CancellationToken ct = default)
     {
-        var affected = await repository.DeleteByIdAsync(uow, command.Id, ct);
+        var affected = await repository.UpdateAsync(uow, command.Entity, ct);
         return Result<int>.Ok(affected);
     }
 }
+

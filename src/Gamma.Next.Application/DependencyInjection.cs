@@ -38,6 +38,7 @@ public static class DependencyInjection
 
         //services.Decorate(typeof(ICommandHandler<,>), typeof(AuditingCommandHandlerDecorator<,>));
         //services.Decorate(typeof(ICommandService<,,,>), typeof(CommandServiceAuthorizationDecorator<,,,>));
+        services.Decorate(typeof(IQueryHandler<,>), typeof(QueryHandlerAuthorizationDecorator<,>));
         services.DecorateProxies();
 
         return services;

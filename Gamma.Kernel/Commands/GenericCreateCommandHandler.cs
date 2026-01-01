@@ -4,7 +4,7 @@ using Gamma.Kernel.Models;
 
 namespace Gamma.Kernel.Commands;
 
-public class CreateCommandHandler<TEntity>(IRepository<TEntity> repository, IUidGenerator uidGenerator)
+public class GenericCreateCommandHandler<TEntity>(IRepository<TEntity> repository, IUidGenerator uidGenerator)
     : ICreateCommandHandler<TEntity>
     where TEntity : BaseEntity
 {

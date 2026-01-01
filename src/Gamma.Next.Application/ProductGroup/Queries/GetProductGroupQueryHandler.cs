@@ -6,11 +6,11 @@ using Gamma.Next.Application.ProductGroup.Dtos;
 
 namespace Gamma.Next.Application.ProductGroup.Queries;
 
-internal sealed class GetProductGroupsQueryHandler(IDbConnectionFactory connectionFactory)
-        : IQueryHandler<GetProductGroupsQuery, PagedResult<ProductGroupDto>>
+internal sealed class GetProductGroupQueryHandler(IDbConnectionFactory connectionFactory)
+        : IQueryHandler<GetProductGroupQuery, PagedResult<ProductGroupDto>>
 {
     public async Task<PagedResult<ProductGroupDto>> HandleAsync(
-        GetProductGroupsQuery query,
+        GetProductGroupQuery query,
         CancellationToken cancellationToken)
     {
         var page = query.Page;
