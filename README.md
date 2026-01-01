@@ -1,6 +1,20 @@
 ﻿# Gamma.Kernel
 
-**Gamma.Kernel** is a reusable, lightweight kernel library designed for building scalable .NET applications with a focus on **Clean Architecture**, **DDD**, and **CQRS** principles. It provides core abstractions and building blocks without imposing frameworks or database constraints.
+**Gamma.Kernel** is a lightweight, opinionated .NET kernel for **CQRS, Clean Architecture, and DDD-based applications**.  
+Gamma.Kernel helps you structure your app, enforce cross-cutting concerns, and keep your business logic clean — without locking you into a framework or database.
+
+---
+
+## Why Gamma.Kernel Exists
+
+Building enterprise apps often leads to scattered logic for:
+
+- Authorization and permissions
+- Transactions and Unit of Work
+- Query/Command handling
+- Auditing and logging
+
+Gamma.Kernel centralizes these concerns in a **minimal, reusable kernel** so you can focus on your domain.
 
 ---
 
@@ -14,40 +28,21 @@
 
 ---
 
-## Features
+## Key Features
 
-- `BaseEntity` abstraction for consistent entity design
-- Generic CUD repository using **Dapper**
-- Audit helpers (optional per entity)
-- Attribute-based mapping: `Identity`, `InsertOnly`, `RowVersion`
-- `IClock` and `ICurrentUser` abstractions for time and user context
-- `ICommand`/`IQuery` and handlers for CQRS pipelines
-- Unit of Work and transaction context management
-- Pipeline behaviors: validation, logging, transaction handling
+- `ICommand`/`IQuery` and handler pipelines for CQRS
+- DispatchProxy and decorator-based **authorization enforcement**
+- Attribute-based entity helpers (`Identity`, `InsertOnly`, `RowVersion`)
+- Dapper Micro-ORM integration – generic CUD repositories, transactional support, attribute-based entity mapping (Identity, InsertOnly, RowVersion)
+- Unit of Work & transaction context management
+- Audit helpers – optional per entity, minimal boilerplate
+- Infrastructure abstractions: `IClock`, `ICurrentUser`
 
----
-
-## Goals
-
-- Keep **zero business logic** in the kernel
-- Remain **database-agnostic** and lightweight
-- Fully **Clean Architecture friendly**
-- Enable easy **unit testing** with abstracted infrastructure
+> Opinionated, but framework-agnostic — works with any .NET 10+ app.
 
 ---
 
-## What Gamma.Kernel Is NOT
-
-- ❌ Not a full framework
-- ❌ Not a replacement for ASP.NET Core
-- ❌ Not an ORM
-- ❌ Not tied to EF Core or any database
-
-It is intentionally **small, focused, and reusable**.
-
----
-
-## Setup Guide
+## Quick Start (Setup Guide)
 
 To run the project locally and execute test scenarios, follow these steps:
 
@@ -70,13 +65,14 @@ GO
 
 ---
 
-## Roadmap (High Level)
+## Roadmap
 
-- Fine-grained authorization
-- Domain events abstraction
-- Outbox pattern support
-- Improved diagnostics hooks
-- Source-generated helpers for repetitive tasks
+- **Domain events abstraction** – standardize event publishing across your domain
+- **Outbox pattern support** – reliable message delivery for distributed systems
+- **Improved diagnostics & observability hooks** – metrics, logging, and tracing for pipelines and transactions
+- **Application generator from entities** – scaffold application layers (commands, queries, DTOs) automatically
+- **CQRS pipeline extensions** – add custom behaviors, middleware, and cross-cutting features
+- **Test harnesses & examples** – ready-to-run samples for contributors to experiment safely
 
 ---
 
@@ -108,4 +104,32 @@ GO
   │
   └─ MyApp.Api
       ├─ EndPoints
+```
+
+---
+
+## Architecture Overview
+
+```mermaid
+flowchart TD
+    A[API / Endpoints] --> B[Application Services]
+    B --> C[Command & Query Handlers]
+    C --> D[Domain Layer / Entities]
+    C --> E[Unit of Work / Transactions]
+    C --> F[Cross-Cutting Concerns]
+    F --> G[Authorization Decorators / DispatchProxy]
+    F --> H[Logging / Audit]
+    E --> I[Repositories (Dapper)]
+    I --> J[Database]
+
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style B fill:#bbf,stroke:#333,stroke-width:2px
+    style C fill:#bfb,stroke:#333,stroke-width:2px
+    style D fill:#ffb,stroke:#333,stroke-width:2px
+    style E fill:#fbb,stroke:#333,stroke-width:2px
+    style F fill:#fbf,stroke:#333,stroke-width:2px
+    style G fill:#fdf,stroke:#333,stroke-width:2px
+    style H fill:#dfd,stroke:#333,stroke-width:2px
+    style I fill:#ddf,stroke:#333,stroke-width:2px
+    style J fill:#ffd,stroke:#333,stroke-width:2px
 ```
