@@ -113,13 +113,13 @@ GO
 ```mermaid
 flowchart TD
     A[API / Endpoints] --> B[Application Services]
-    B --> C[Command & Query Handlers]
-    C --> D[Domain Layer / Entities]
+    B --> C[Command and Query Handlers]
+    C --> D[Domain Layer]
     C --> E[Unit of Work / Transactions]
     C --> F[Cross-Cutting Concerns]
-    F --> G[Authorization Decorators / DispatchProxy]
-    F --> H[Logging / Audit]
-    E --> I[Repositories (Dapper)]
+    F --> G[Authorization Decorators]
+    F --> H[Logging and Audit]
+    E --> I[Repositories]
     I --> J[Database]
 
     style A fill:#f9f,stroke:#333,stroke-width:2px
@@ -133,3 +133,5 @@ flowchart TD
     style I fill:#ddf,stroke:#333,stroke-width:2px
     style J fill:#ffd,stroke:#333,stroke-width:2px
 ```
+
+
