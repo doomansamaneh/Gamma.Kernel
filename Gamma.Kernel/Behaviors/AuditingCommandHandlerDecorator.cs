@@ -5,11 +5,11 @@ using Gamma.Kernel.Models;
 namespace Gamma.Kernel.Behaviors;
 
 public sealed class AuditingCommandHandlerDecorator<TCommand, TResult>(
-    ICommandHandler<TCommand, TResult> inner,
+    ICommandHandler_<TCommand, TResult> inner,
     IAuditLogger audit,
     ICurrentUser currentUser,
     ISystemClock systemClock)
-    : ICommandHandler<TCommand, TResult>
+    : ICommandHandler_<TCommand, TResult>
 {
     public async Task<Result<TResult>> HandleAsync(
         IUnitOfWork uow,

@@ -3,7 +3,7 @@ using Gamma.Kernel.Abstractions;
 
 namespace Gamma.Kernel.Persistence;
 
-public class DapperUnitOfWork : IUnitOfWork
+public class DapperUnitOfWork_ : IUnitOfWork
 {
     private readonly IDbConnection _connection;
     private readonly IDbTransaction? _transaction;
@@ -13,7 +13,7 @@ public class DapperUnitOfWork : IUnitOfWork
 
     private readonly List<Func<CancellationToken, Task>> _onCommitted = [];
 
-    public DapperUnitOfWork(IDbConnectionFactory connectionFactory)
+    public DapperUnitOfWork_(IDbConnectionFactory connectionFactory)
     {
         _connection = connectionFactory.CreateConnection();
         if (_connection.State != ConnectionState.Open) _connection.Open();
@@ -53,4 +53,10 @@ public class DapperUnitOfWork : IUnitOfWork
         if (_connection.State == ConnectionState.Open)
             _connection.Close();
     }
+}
+
+public sealed class CurrentUnitOfWork(IDbConnection connection, IDbTransaction? transaction) : IUnitOfWork
+{
+    public IDbConnection Connection { get; } = connection;
+    public IDbTransaction? Transaction { get; } = transaction;
 }

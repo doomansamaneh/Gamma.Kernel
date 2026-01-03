@@ -1,13 +1,9 @@
 using Gamma.Kernel.Enums;
+using Mediator;
 
 namespace Gamma.Kernel.Abstractions;
 
-public interface ICommand
-{
-
-}
-
-public interface IAuditableCommand
+public interface IAuditableCommand : IBaseCommand
 {
     AuditAction Action { get; }
     string EntityName { get; }

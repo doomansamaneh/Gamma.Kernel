@@ -4,17 +4,21 @@ using Gamma.Kernel.Models;
 
 namespace Gamma.Kernel.Commands;
 
-public class GenericUpdateCommandHandler<TEntity>(IRepository<TEntity> repository)
-    : IUpdateCommandHandler<TEntity>
+public sealed class GenericUpdateCommandHandler<TEntity>(
+    IRepository<TEntity> repository
+) : IUpdateCommandHandler<TEntity>
     where TEntity : BaseEntity
 {
-    public async Task<Result<int>> HandleAsync(
-        IUnitOfWork uow,
+    public async ValueTask<Result<int>> Handle(
         GenericUpdateCommand<TEntity> command,
         CancellationToken ct = default)
     {
-        var affected = await repository.UpdateAsync(uow, command.Entity, ct);
+        ArgumentNullException.ThrowIfNull(command, nameof(command));
+        ArgumentNullException.ThrowIfNull(command.Entity, nameof(command.Entity));
+
+        var affected = await repository.UpdateAsync(command.Entity, ct);
         return Result<int>.Ok(affected);
     }
 }
+
 

@@ -10,6 +10,7 @@
     <PackageReference Include="Castle.Core" Version="5.2.1" />
     <PackageReference Include="Dapper" Version="2.1.66" />
     <PackageReference Include="HtmlSanitizer" Version="9.0.889" />
+    <PackageReference Include="Mediator.Abstractions" Version="3.0.*" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.1" />
     <PackageReference Include="Scrutor" Version="7.0.0" />
