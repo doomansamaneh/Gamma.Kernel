@@ -1,9 +1,9 @@
 using System.Diagnostics.CodeAnalysis;
 using Mediator;
 
-namespace Gamma.Next.Application.Pipelines;
+namespace Gamma.Kernel.Pipelines;
 
-public sealed class MessageValidatorBehaviour<TMessage, TResponse> : MessagePreProcessor<TMessage, TResponse>
+public sealed class MessageValidatorPipeline<TMessage, TResponse> : MessagePreProcessor<TMessage, TResponse>
     where TMessage : IValidate
 {
     protected override ValueTask Handle(TMessage message, CancellationToken cancellationToken)

@@ -1,9 +1,8 @@
-using System.Data;
 using Gamma.Kernel.Abstractions;
 using Gamma.Kernel.Persistence;
 using Mediator;
 
-namespace Gamma.Next.Application.Pipelines;
+namespace Gamma.Kernel.Pipelines;
 
 public sealed class UnitOfWorkPipeline<TMessage, TResponse>(IDbConnectionFactory connectionFactory)
     : IPipelineBehavior<TMessage, TResponse>

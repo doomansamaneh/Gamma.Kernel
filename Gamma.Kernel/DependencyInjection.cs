@@ -16,12 +16,8 @@ public static class DependencyInjection
 
         services.AddScoped<IAuthorizationContext, AuthorizationContext>();
         services.AddScoped<IAuthorizationService, AuthorizationService>();
+        services.AddScoped<IAuditMetadataResolver, Logging.DefaultAuditMetadataResolver>();
         services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
-
-        // Semantic APIs
-        // services.AddScoped(typeof(ICreateCommandHandler<>), typeof(GenericCreateCommandHandler<>));
-        // services.AddScoped(typeof(IUpdateCommandHandler<>), typeof(GenericUpdateCommandHandler<>));
-        // services.AddScoped(typeof(IDeleteCommandHandler<,>), typeof(GenericDeleteCommandHandler<,>));
 
         return services;
     }

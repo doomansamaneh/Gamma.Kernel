@@ -14,8 +14,7 @@ public static class ProductGroupEndpoints
 {
     public static void MapProductGroupEndPoints(this IEndpointRouteBuilder app)
     {
-        // Create / Add
-        app.MapPost("/product-groups", async (
+        app.MapPost("/product-group", async (
             CreateProductGroupCommand command,
             IMediator mediator,
             CancellationToken ct
@@ -23,98 +22,38 @@ public static class ProductGroupEndpoints
         {
             var result = await mediator.Send(command, ct);
             return result.Success
-                ? Results.Created($"/product-groups/{result.Data}", result.Data)
+                ? Results.Created($"/product-group/{result.Data}", result.Data)
                 : Results.BadRequest(result.Errors);
         });
 
-        // // Edit
-        // app.MapPut("/product-groups/{id:guid}", async (
-        //     Guid id,
-        //     UpdateProductGroupCommand command,
-        //     IProductGroupCommandService service,
-        //     CancellationToken ct
-        // ) =>
-        // {
-        //     command.Id = id;
-        //     var result = await service.UpdateAsync(command, ct);
-        //     return result.Success
-        //         ? Results.Ok(result.Data)
-        //         : Results.BadRequest(result.Errors);
-        // });
-
-        // Delete
-        // app.MapDelete("/product-groups/{id:guid}", async (
-        //     Guid id,
-        //     IProductGroupCommandService service,
-        //     CancellationToken ct
-        // ) =>
-        // {
-        //     var command = new DeleteProductGroupCommand { Id = id };
-        //     var result = await service.DeleteAsync(command, ct);
-        //     return result.Success
-        //         ? Results.Ok(result.Data)
-        //         : Results.BadRequest(result.Errors);
-        // });
-
-        // test add service
-        app.MapGet("/test-add-pg", async (
-                IMediator mediator,
-                CancellationToken ct) =>
+        app.MapPut("/product-group/{id:guid}", async (
+            Guid id,
+            UpdateProductGroupCommand command,
+            IMediator mediator,
+            CancellationToken ct
+        ) =>
         {
-            var command = new CreateProductGroupCommand(new ProductGroupInput
-            {
-                Code = "t001",
-                Title = "Test Product Group",
-                Comment = "This is a test product group",
-                IsActive = true
-            });
-            command.ProductGroup.Products.Add(
-                new ProductInput
-                {
-                    Code = "p001",
-                    Title = "Test Product 1",
-                    Comment = "This is test product 1",
-                    IsActive = true
-                });
-            command.ProductGroup.Products.Add(
-                new ProductInput
-                {
-                    Code = "p002",
-                    Title = "Test Product 2",
-                    Comment = "This is test product 2",
-                    IsActive = true
-                });
-
+            command.Id = id;
             var result = await mediator.Send(command, ct);
             return result.Success
-                    ? Results.Ok(new { Id = result.Data, command.ProductGroup.Code, command.ProductGroup.Title })
-                    : Results.BadRequest(result.Errors);
+                ? Results.Ok(result.Data)
+                : Results.BadRequest(result.Errors);
         });
 
-        // test add service
-        app.MapGet("/test-update-pg", async (
-                IMediator mediator,
-                CancellationToken ct) =>
+        app.MapDelete("/product-group/{id:guid}", async (
+            Guid id,
+            IMediator mediator,
+            CancellationToken ct
+        ) =>
         {
-            var command = new UpdateProductGroupCommand(new ProductGroupInput
-            {
-                Code = "t001",
-                Title = "Test Product Group",
-                Comment = "This is a test product group",
-                IsActive = true,
-            })
-            {
-                Id = new("019B74F7-84D6-7741-B1A3-433144D33679"),
-                RowVersion = 1
-            };
-
+            var command = new DeleteProductGroupCommand { Id = id };
             var result = await mediator.Send(command, ct);
             return result.Success
-                    ? Results.Ok(new { Id = result.Data, command.ProductGroup.Code, command.ProductGroup.Title })
-                    : Results.BadRequest(result.Errors);
+                ? Results.Ok(result.Data)
+                : Results.BadRequest(result.Errors);
         });
 
-        app.MapGet("/test-get-pg", async (
+        app.MapGet("/dataGrid", async (
                 IMediator mediator,
                 CancellationToken ct) =>
         {
@@ -133,6 +72,32 @@ public static class ProductGroupEndpoints
             var result = await mediator.Send(query, ct);
 
             return Results.Ok(result);
+        });
+
+
+        app.MapPost("/product", async (
+           CreateProductCommand command,
+           IMediator mediator,
+           CancellationToken ct
+       ) =>
+       {
+           var result = await mediator.Send(command, ct);
+           return result.Success
+               ? Results.Created($"/product/{result.Data}", result.Data)
+               : Results.BadRequest(result.Errors);
+       });
+
+        app.MapDelete("/product/{id:guid}", async (
+            Guid id,
+            IMediator mediator,
+            CancellationToken ct
+        ) =>
+        {
+            var command = new DeleteProductCommand { Id = id };
+            var result = await mediator.Send(command, ct);
+            return result.Success
+                ? Results.Ok(result.Data)
+                : Results.BadRequest(result.Errors);
         });
     }
 }

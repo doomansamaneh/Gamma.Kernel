@@ -1,13 +1,12 @@
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using Gamma.Kernel.Abstractions;
 using Gamma.Kernel.Exceptions;
 using Gamma.Kernel.Security;
 using Mediator;
 
-namespace Gamma.Next.Application.Pipelines;
+namespace Gamma.Kernel.Pipelines;
 
-internal sealed class AuthorizationPipeline<TMessage, TResponse>(
+public sealed class AuthorizationPipeline<TMessage, TResponse>(
     IAuthorizationService authorizationService,
     IAuthorizationContext authContext
 ) : IPipelineBehavior<TMessage, TResponse>

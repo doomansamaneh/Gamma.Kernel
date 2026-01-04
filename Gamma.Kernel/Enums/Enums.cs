@@ -76,7 +76,8 @@ public enum AuditAction
     Create,
     Update,
     Delete,
-    Read
+    Read,
+    Custom
 }
 
 public enum SortOrder

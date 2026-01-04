@@ -1,17 +1,14 @@
 using Gamma.Kernel.Abstractions;
-using Gamma.Kernel.Enums;
-using Gamma.Kernel.Models;
-using Mediator;
+using Gamma.Kernel.Commands;
+using Gamma.Kernel.Security;
 
 namespace Gamma.Next.Application.Product.Commands;
 
+[RequiresPermission("ast.product.create")]
 public sealed record CreateProductCommand(ProductInput Product)
-    : IAuditableCommand,
-    ICommand<Result<Guid>>
+    : CreateCommandBase<Domain.Entities.Product>
+    , IAuditableCommand
 {
-    public AuditAction Action => AuditAction.Create;
-    public string EntityName => "Ast.Product";
-    public string EntityId => "";
-    public object? Before => null;
-    public object? After => Product;
+    public override Domain.Entities.Product Entity => Product.ToEntity();
 }
+

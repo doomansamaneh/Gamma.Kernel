@@ -9,7 +9,19 @@ public sealed class HttpCurrentUser(IHttpContextAccessor httpContextAccessor) : 
 {
     public IReadOnlyCollection<string> Roles => ["admin"];
 
-    public IReadOnlyCollection<string> Permissions => ["crm.person.create", "ast.product-group.create", "ast.product-group.read", "ast.product-group.update"];
+    public IReadOnlyCollection<string> Permissions =>
+        [
+        "crm.person.create",
+        "ast.product-group.create",
+        "ast.product-group.read",
+        "ast.product-group.update",
+        "ast.product-group.delete",
+
+        "ast.product.create",
+        "ast.product.read",
+        "ast.product.update",
+        "ast.product.delete"
+        ];
 
     public Guid GetUserId()
     {

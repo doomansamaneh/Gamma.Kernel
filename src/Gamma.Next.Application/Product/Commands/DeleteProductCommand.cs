@@ -1,16 +1,10 @@
 using Gamma.Kernel.Abstractions;
 using Gamma.Kernel.Commands;
-using Gamma.Kernel.Enums;
+using Gamma.Kernel.Security;
 
 namespace Gamma.Next.Application.Product.Commands;
 
-public class DeleteProductCommand : IAuditableCommand
-{
-    public Guid Id { get; set; }
-    public AuditAction Action => AuditAction.Delete;
-    public string EntityName => "Ast.Product";
-    public string EntityId => Id.ToString();
-
-    public object? Before => null;
-    public object? After => null;
-}
+[RequiresPermission("ast.product.delete")]
+public sealed class DeleteProductCommand
+    : DeleteCommandBase,
+    IAuditableCommand;

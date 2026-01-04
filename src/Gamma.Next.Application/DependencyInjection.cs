@@ -20,11 +20,10 @@ public static class DependencyInjection
        );
 
         services
-            .AddScoped(typeof(IPipelineBehavior<,>), typeof(Pipelines.AuthorizationPipeline<,>))
+            .AddScoped(typeof(IPipelineBehavior<,>), typeof(Kernel.Pipelines.AuthorizationPipeline<,>))
             //.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationPipeline<,>))
-            .AddScoped(typeof(IPipelineBehavior<,>), typeof(Pipelines.UnitOfWorkPipeline<,>))
-            .AddScoped(typeof(IPipelineBehavior<,>), typeof(Pipelines.AuditLoggingPipeline<,>))
-            //.AddScoped(typeof(IPipelineBehavior<,>), typeof(Pipelines.ErrorLoggingBehaviour<,>))
+            .AddScoped(typeof(IPipelineBehavior<,>), typeof(Kernel.Pipelines.UnitOfWorkPipeline<,>))
+            .AddScoped(typeof(IPipelineBehavior<,>), typeof(Kernel.Pipelines.AuditPipeline<,>))
             ;
 
         // Register FluentValidation validators
