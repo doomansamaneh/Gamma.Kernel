@@ -14,13 +14,19 @@ builder.Services
     .AddInfra()
     .AddApi();
 
+builder.Services.AddOpenApi();
 var app = builder.Build();
 
-// if (app.Environment.IsDevelopment())
-// {
-//     app.UseSwagger();
-//     app.UseSwaggerUI();
-// }
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/openapi/v1.json", "API v1");
+        options.RoutePrefix = "swagger";
+    });
+}
 
 app.UseKernelDefaults();
 

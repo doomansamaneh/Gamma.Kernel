@@ -3,13 +3,14 @@ using Gamma.Kernel.Dapper;
 using Gamma.Kernel.Extensions;
 using Gamma.Kernel.Paging;
 using Gamma.Next.Application.ProductGroup.Dtos;
+using Mediator;
 
 namespace Gamma.Next.Application.ProductGroup.Queries;
 
 internal sealed class GetProductGroupQueryHandler(IDbConnectionFactory connectionFactory)
         : IQueryHandler<GetProductGroupQuery, PagedResult<ProductGroupDto>>
 {
-    public async Task<PagedResult<ProductGroupDto>> HandleAsync(
+    public async ValueTask<PagedResult<ProductGroupDto>> Handle(
         GetProductGroupQuery query,
         CancellationToken cancellationToken)
     {

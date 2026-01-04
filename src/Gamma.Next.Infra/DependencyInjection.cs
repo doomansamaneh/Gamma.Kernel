@@ -15,8 +15,6 @@ public static class DependencyInjection
         this IServiceCollection services)
     {
         services.AddSingleton<IDbConnectionFactory, SqlConnectionFactory>();
-        services.AddSingleton<IUnitOfWorkFactory, DapperUnitOfWorkFactory>();
-        services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
         services.AddScoped<ICurrentUser, Identity.HttpCurrentUser>();
 
         // Configure Serilog

@@ -2,6 +2,7 @@ using Gamma.Kernel.Abstractions;
 using Gamma.Kernel.Paging;
 using Gamma.Kernel.Security;
 using Gamma.Next.Application.ProductGroup.Dtos;
+using Mediator;
 
 namespace Gamma.Next.Application.ProductGroup.Queries;
 

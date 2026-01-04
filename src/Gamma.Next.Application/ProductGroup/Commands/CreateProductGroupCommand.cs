@@ -1,13 +1,12 @@
 using Gamma.Kernel.Abstractions;
 using Gamma.Kernel.Enums;
+using Gamma.Kernel.Models;
+using Gamma.Kernel.Security;
+using Mediator;
 
 namespace Gamma.Next.Application.ProductGroup.Commands;
 
-public sealed record CreateProductGroupCommand(ProductGroupInput ProductGroup) : IAuditableCommand
-{
-    public AuditAction Action => AuditAction.Create;
-    public string EntityName => "Ast.ProductGroup";
-    public string EntityId => "";
-    public object? Before => null;
-    public object? After => ProductGroup;
-}
+[RequiresPermission("ast.product-group.create")]
+public sealed record CreateProductGroupCommand(ProductGroupInput ProductGroup)
+     : IAuditableCommand,
+        ICommand<Result<Guid>>;

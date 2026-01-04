@@ -1,11 +1,12 @@
 using Gamma.Kernel.Abstractions;
 using Gamma.Kernel.Enums;
 using Gamma.Kernel.Paging;
-using Gamma.Next.Application.Commands.Product;
+using Gamma.Next.Application.Product.Commands;
 using Gamma.Next.Application.ProductGroup;
 using Gamma.Next.Application.ProductGroup.Commands;
 using Gamma.Next.Application.ProductGroup.Dtos;
 using Gamma.Next.Application.ProductGroup.Queries;
+using Mediator;
 
 namespace Gamma.Next.Api.Endpoints;
 
@@ -16,11 +17,11 @@ public static class ProductGroupEndpoints
         // Create / Add
         app.MapPost("/product-groups", async (
             CreateProductGroupCommand command,
-            IProductGroupCommandService service,
+            IMediator mediator,
             CancellationToken ct
         ) =>
         {
-            var result = await service.CreateAsync(command, ct);
+            var result = await mediator.Send(command, ct);
             return result.Success
                 ? Results.Created($"/product-groups/{result.Data}", result.Data)
                 : Results.BadRequest(result.Errors);
@@ -57,7 +58,7 @@ public static class ProductGroupEndpoints
 
         // test add service
         app.MapGet("/test-add-pg", async (
-                IProductGroupCommandService service,
+                IMediator mediator,
                 CancellationToken ct) =>
         {
             var command = new CreateProductGroupCommand(new ProductGroupInput
@@ -84,7 +85,7 @@ public static class ProductGroupEndpoints
                     IsActive = true
                 });
 
-            var result = await service.CreateAsync(command, ct);
+            var result = await mediator.Send(command, ct);
             return result.Success
                     ? Results.Ok(new { Id = result.Data, command.ProductGroup.Code, command.ProductGroup.Title })
                     : Results.BadRequest(result.Errors);
@@ -92,7 +93,7 @@ public static class ProductGroupEndpoints
 
         // test add service
         app.MapGet("/test-update-pg", async (
-                IProductGroupCommandService service,
+                IMediator mediator,
                 CancellationToken ct) =>
         {
             var command = new UpdateProductGroupCommand(new ProductGroupInput
@@ -107,14 +108,14 @@ public static class ProductGroupEndpoints
                 RowVersion = 1
             };
 
-            var result = await service.UpdateAsync(command, ct);
+            var result = await mediator.Send(command, ct);
             return result.Success
                     ? Results.Ok(new { Id = result.Data, command.ProductGroup.Code, command.ProductGroup.Title })
                     : Results.BadRequest(result.Errors);
         });
 
         app.MapGet("/test-get-pg", async (
-                IQueryHandler<GetProductGroupQuery, PagedResult<ProductGroupDto>> handler,
+                IMediator mediator,
                 CancellationToken ct) =>
         {
             var pageModel = new PageModel<ProductGroupSearch>
@@ -129,7 +130,7 @@ public static class ProductGroupEndpoints
 
             var query = new GetProductGroupQuery(pageModel);
 
-            var result = await handler.HandleAsync(query, ct);
+            var result = await mediator.Send(query, ct);
 
             return Results.Ok(result);
         });

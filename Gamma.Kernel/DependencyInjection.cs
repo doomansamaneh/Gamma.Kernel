@@ -1,7 +1,7 @@
 using Gamma.Kernel.Abstractions;
-using Gamma.Kernel.Commands;
+using Gamma.Kernel.Data;
 using Gamma.Kernel.Infra;
-using Gamma.Kernel.Persistence;
+using Gamma.Kernel.Security;
 using Gamma.Kernel.Services;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,13 +14,14 @@ public static class DependencyInjection
         services.AddSingleton<IUidGenerator, UidGenerator>();
         services.AddSingleton<ISystemClock, SystemClockService>();
 
+        services.AddScoped<IAuthorizationContext, AuthorizationContext>();
         services.AddScoped<IAuthorizationService, AuthorizationService>();
-        services.AddScoped<ITransactionExecutor, TransactionExecutor>();
+        services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
 
-        // Register open-generic CUD handlers
-        services.AddScoped(typeof(ICreateCommandHandler<>), typeof(GenericCreateCommandHandler<>));
-        services.AddScoped(typeof(IUpdateCommandHandler<>), typeof(GenericUpdateCommandHandler<>));
-        services.AddScoped(typeof(IDeleteCommandHandler<,>), typeof(GenericDeleteCommandHandler<,>));
+        // Semantic APIs
+        // services.AddScoped(typeof(ICreateCommandHandler<>), typeof(GenericCreateCommandHandler<>));
+        // services.AddScoped(typeof(IUpdateCommandHandler<>), typeof(GenericUpdateCommandHandler<>));
+        // services.AddScoped(typeof(IDeleteCommandHandler<,>), typeof(GenericDeleteCommandHandler<,>));
 
         return services;
     }
