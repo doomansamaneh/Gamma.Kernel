@@ -11,6 +11,6 @@ public sealed record UpdateProductCommand(ProductInput Product)
     : UpdateCommandBase<Domain.Entities.Product>,
     IAuditableCommand
 {
-    public override Domain.Entities.Product Entity => Product.Adapt<Domain.Entities.Product>();
+    public override Domain.Entities.Product GetEntity() => Product.Adapt<Domain.Entities.Product>();
 }
 

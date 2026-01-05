@@ -25,7 +25,7 @@ public abstract class CreateCommandHandlerBase<TCommand, TEntity>(
             return Result<Guid>.Fail(preResult.Errors, preResult.Message);
 
         // Main create operation
-        var entity = await Repository.InsertAsync(command.Entity, ct);
+        var entity = await Repository.InsertAsync(command.GetEntity(), ct);
 
         // Post-create hook: logging, domain events, nested entity creation
         var postResult = await OnAfterCreate(command, entity, ct);

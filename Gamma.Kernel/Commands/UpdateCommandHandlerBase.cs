@@ -23,7 +23,7 @@ public abstract class UpdateCommandHandlerBase<TCommand, TEntity>(
         if (!preResult.Success)
             return Result<int>.Fail(preResult.Errors, preResult.Message);
 
-        var affected = await Repository.UpdateAsync(command.Entity, ct);
+        var affected = await Repository.UpdateAsync(command.GetEntity(), ct);
         if (affected == 0)
             return Result<int>.Fail($"{typeof(TEntity).Name} not found.");
 

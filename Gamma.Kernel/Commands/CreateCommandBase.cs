@@ -8,5 +8,5 @@ public abstract record CreateCommandBase<TEntity>
     : ICommand<Result<Guid>>
     where TEntity : BaseEntity
 {
-    public virtual TEntity Entity { get; init; } = default!;
+    public abstract TEntity GetEntity();
 }

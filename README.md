@@ -63,6 +63,10 @@ GO
 
    Open db-script.sql and run it in [gamma-next] database.
 
+4. **Test Endpoints**
+
+   Press F5, {{ur}}/swagger/index.html
+
 ---
 
 ## Roadmap
@@ -133,5 +137,3 @@ flowchart TD
     style I fill:#ddf,stroke:#333,stroke-width:2px
     style J fill:#ffd,stroke:#333,stroke-width:2px
 ```
-
-

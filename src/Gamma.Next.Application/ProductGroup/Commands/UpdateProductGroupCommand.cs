@@ -10,5 +10,5 @@ public sealed record UpdateProductGroupCommand(ProductGroupInput ProductGroup, l
     : UpdateCommandBase<Domain.Entities.ProductGroup>,
     IAuditableCommand
 {
-    public override Domain.Entities.ProductGroup Entity => ProductGroup.Adapt<Domain.Entities.ProductGroup>();
+    public override Domain.Entities.ProductGroup GetEntity() => ProductGroup.Adapt<Domain.Entities.ProductGroup>();
 }
