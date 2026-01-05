@@ -1,5 +1,6 @@
 using System.Dynamic;
 using System.Reflection;
+using Gamma.Kernel.Models;
 
 namespace Gamma.Kernel.Extensions;
 
@@ -106,5 +107,12 @@ public static class ObjectExtensions
     public static List<string> GetFieldList(this Type modelType)
     {
         return modelType.GetProperties().Select(f => f.Name).ToList();
+    }
+
+    public static Result<EmptyUnit> ToEmptyUnit<T>(this Result<T> result)
+    {
+        return result.Success
+            ? Result<EmptyUnit>.Ok(default)
+            : Result<EmptyUnit>.Fail(result.Errors, result.Message);
     }
 }

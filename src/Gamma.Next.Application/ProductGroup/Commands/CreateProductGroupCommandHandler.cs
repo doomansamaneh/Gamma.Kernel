@@ -1,5 +1,6 @@
 using Gamma.Kernel.Abstractions;
 using Gamma.Kernel.Commands;
+using Gamma.Kernel.Extensions;
 using Gamma.Kernel.Models;
 using Gamma.Next.Application.Product.Commands;
 using Mediator;
@@ -17,7 +18,7 @@ internal sealed class CreateProductGroupCommandHandler(
             CancellationToken ct)
     {
         if (command.ProductGroup.Products is not { Count: > 0 })
-            return Result<EmptyUnit>.Ok(new EmptyUnit());
+            return Result<EmptyUnit>.Ok(default);
 
         foreach (var product in command.ProductGroup.Products)
         {
@@ -27,12 +28,10 @@ internal sealed class CreateProductGroupCommandHandler(
 
             if (!productResult.Success)
             {
-                return Result<EmptyUnit>.Fail(productResult.Errors, productResult.Message);
+                return productResult.ToEmptyUnit();
             }
         }
 
-        return Result<EmptyUnit>.Ok(new EmptyUnit());
+        return Result<EmptyUnit>.Ok(default);
     }
 }
-
-

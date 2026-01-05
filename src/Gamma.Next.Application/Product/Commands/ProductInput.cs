@@ -7,16 +7,4 @@ public class ProductInput
     public string Title { get; set; } = default!;
     public string? Comment { get; set; }
     public bool IsActive { get; set; } = true;
-
-    public Domain.Entities.Product ToEntity()
-    {
-        return new Domain.Entities.Product
-        {
-            Code = Code,
-            ProductGroupId = ProductGroupId,
-            Title = Title,
-            Comment = Comment,
-            IsActive = IsActive
-        };
-    }
 }

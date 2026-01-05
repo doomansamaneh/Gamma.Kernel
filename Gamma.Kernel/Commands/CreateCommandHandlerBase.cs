@@ -37,12 +37,12 @@ public abstract class CreateCommandHandlerBase<TCommand, TEntity>(
 
     protected virtual ValueTask<Result<EmptyUnit>> OnBeforeCreate(
         TCommand command,
-        CancellationToken ct) => ValueTask.FromResult(Result<EmptyUnit>.Ok(new EmptyUnit()));
+        CancellationToken ct) => ValueTask.FromResult(Result<EmptyUnit>.Ok(default));
 
     protected virtual ValueTask<Result<EmptyUnit>> OnAfterCreate(
         TCommand command,
         TEntity entity,
-        CancellationToken ct) => ValueTask.FromResult(Result<EmptyUnit>.Ok(new EmptyUnit()));
+        CancellationToken ct) => ValueTask.FromResult(Result<EmptyUnit>.Ok(default));
 }
 
 

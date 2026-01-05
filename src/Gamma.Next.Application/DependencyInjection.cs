@@ -2,6 +2,7 @@ using System.Reflection;
 using FluentValidation;
 using Gamma.Kernel.Abstractions;
 using Gamma.Kernel.Services;
+using Mapster;
 using Mediator;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -18,6 +19,8 @@ public static class DependencyInjection
                options.ServiceLifetime = ServiceLifetime.Scoped;
            }
        );
+
+        services.AddMapster();
 
         services
             .AddScoped(typeof(IPipelineBehavior<,>), typeof(Kernel.Pipelines.AuthorizationPipeline<,>))

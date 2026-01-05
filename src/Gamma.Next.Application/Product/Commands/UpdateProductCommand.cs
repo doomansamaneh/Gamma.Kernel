@@ -1,19 +1,16 @@
 using Gamma.Kernel.Abstractions;
-using Gamma.Kernel.Enums;
+using Gamma.Kernel.Commands;
+using Gamma.Kernel.Security;
+using Mapster;
 
 namespace Gamma.Next.Application.Product.Commands;
 
-public class UpdateProductCommand : IAuditableCommand
+
+[RequiresPermission("ast.product.update")]
+public sealed record UpdateProductCommand(ProductInput Product)
+    : UpdateCommandBase<Domain.Entities.Product>,
+    IAuditableCommand
 {
-    public Guid Id { get; set; }
-    public long RecordVersion { get; set; }
-    public ProductInput Product { get; set; } = new();
-    public AuditAction Action => AuditAction.Update;
-
-    public string EntityName => "Ast.Product";
-
-    public string EntityId => Id.ToString();
-
-    public object? Before => null;
-    public object? After => Product;
+    public override Domain.Entities.Product Entity => Product.Adapt<Domain.Entities.Product>();
 }
+

@@ -4,9 +4,13 @@ using Mediator;
 
 namespace Gamma.Kernel.Commands;
 
-public abstract record CreateCommandBase<TEntity>
-    : ICommand<Result<Guid>>
+public abstract record UpdateCommandBase<TEntity>
+    : ICommand<Result<int>>
     where TEntity : BaseEntity
 {
+    public Guid Id { get; init; }
+
     public virtual TEntity Entity { get; init; } = default!;
 }
+
+
