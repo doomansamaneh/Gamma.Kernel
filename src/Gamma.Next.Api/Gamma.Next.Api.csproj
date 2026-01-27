@@ -9,6 +9,7 @@
   <ItemGroup>
     <!-- <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.1" /> -->
     <!-- <PackageReference Include="Microsoft.OpenApi" Version="3.0.2" /> -->
+    <PackageReference Include="Mediator.Abstractions" Version="3.0.*" />
   </ItemGroup>
 
   <ItemGroup>

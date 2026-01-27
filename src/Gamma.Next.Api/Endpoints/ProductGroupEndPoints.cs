@@ -53,7 +53,22 @@ public static class ProductGroupEndpoints
                 : Results.BadRequest(result.Errors);
         });
 
-        app.MapGet("/dataGrid", async (
+        app.MapGet("/product-group/{id:guid}", async (
+            Guid id,
+            IMediator mediator,
+            CancellationToken ct
+        ) =>
+        {
+            var command = new GetByIdProductGroupQuery(id);
+            var result = await mediator.Send(command, ct);
+            return Results.Ok(result);
+            //todo: get by id result
+            // return result.Success
+            //     ? Results.Ok(result.Data)
+            //     : Results.BadRequest(result.Errors);
+        });
+
+        app.MapGet("/prdouct-group/data-grid", async (
                 IMediator mediator,
                 CancellationToken ct) =>
         {
@@ -69,6 +84,17 @@ public static class ProductGroupEndpoints
 
             var query = new GetProductGroupQuery(pageModel);
 
+            var result = await mediator.Send(query, ct);
+
+            return Results.Ok(result);
+        });
+
+        app.MapPost("/product-group/get-data-grid", async (
+                PageModel<ProductGroupSearch> page,
+                IMediator mediator,
+                CancellationToken ct) =>
+        {
+            var query = new GetProductGroupQuery(page);
             var result = await mediator.Send(query, ct);
 
             return Results.Ok(result);

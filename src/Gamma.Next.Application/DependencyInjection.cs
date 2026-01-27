@@ -32,13 +32,6 @@ public static class DependencyInjection
         // Register FluentValidation validators
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly, includeInternalTypes: true);
 
-        services.Scan(scan => scan
-            .FromAssembliesOf(typeof(DependencyInjection))
-            .AddClasses(c => c.AssignableTo(typeof(ICommandHandler_<,>))
-                                .Where(t => !t.IsAbstract), publicOnly: false)
-            .AsImplementedInterfaces()
-            .WithScopedLifetime());
-
         services.Scan(scan => scan.FromAssembliesOf(typeof(DependencyInjection))
                  .AddClasses(c => c.AssignableTo<IApplicationService>()
                                     .Where(t => !t.IsAbstract), publicOnly: false)

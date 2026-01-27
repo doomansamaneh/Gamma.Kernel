@@ -65,7 +65,7 @@ GO
 
 4. **Test Endpoints**
 
-   Press F5, {{ur}}/swagger/index.html
+   Press F5, {{url}}/swagger/index.html
 
 ---
 
