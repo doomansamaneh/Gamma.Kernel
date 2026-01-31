@@ -1,3 +1,4 @@
+using Gamma.Kernel.Queries;
 using Gamma.Kernel.Security;
 using Gamma.Next.Application.ProductGroup.Dtos;
 using Mediator;
@@ -5,6 +6,6 @@ using Mediator;
 namespace Gamma.Next.Application.ProductGroup.Queries;
 
 [RequiresPermission("ast.product-group.read")]
-public sealed record GetByIdProductGroupQuery(
+public sealed record GetProductGroupByIdQuery(
     Guid Id
-) : IQuery<ProductGroupDto>;
+) : IGetByIdQuery<ProductGroupDto>;

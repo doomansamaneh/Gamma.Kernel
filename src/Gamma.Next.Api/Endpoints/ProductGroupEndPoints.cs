@@ -59,7 +59,7 @@ public static class ProductGroupEndpoints
             CancellationToken ct
         ) =>
         {
-            var command = new GetByIdProductGroupQuery(id);
+            var command = new GetProductGroupByIdQuery(id);
             var result = await mediator.Send(command, ct);
             return Results.Ok(result);
             //todo: get by id result
