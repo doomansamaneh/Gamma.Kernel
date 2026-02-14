@@ -1,8 +1,5 @@
-using Gamma.Kernel.Abstractions;
-using Gamma.Kernel.Enums;
 using Gamma.Kernel.Paging;
 using Gamma.Next.Application.Product.Commands;
-using Gamma.Next.Application.ProductGroup;
 using Gamma.Next.Application.ProductGroup.Commands;
 using Gamma.Next.Application.ProductGroup.Dtos;
 using Gamma.Next.Application.ProductGroup.Queries;
@@ -61,33 +58,31 @@ public static class ProductGroupEndpoints
         {
             var command = new GetProductGroupByIdQuery(id);
             var result = await mediator.Send(command, ct);
-            return Results.Ok(result);
-            //todo: get by id result
-            // return result.Success
-            //     ? Results.Ok(result.Data)
-            //     : Results.BadRequest(result.Errors);
+            return result.Success
+                ? Results.Ok(result.Data)
+                : Results.BadRequest(result.Errors);
         });
 
-        app.MapGet("/prdouct-group/data-grid", async (
-                IMediator mediator,
-                CancellationToken ct) =>
-        {
-            var pageModel = new PageModel<ProductGroupSearch>
-            {
-                Page = 1,
-                PageSize = 10,
-                SearchTerm = null,
-                SortBy = "Id",
-                SortOrder = SortOrder.Descending,
-                Search = new ProductGroupSearch("PG00", null, null)
-            };
+        // app.MapGet("/prdouct-group/data-grid", async (
+        //         IMediator mediator,
+        //         CancellationToken ct) =>
+        // {
+        //     var pageModel = new PageModel<ProductGroupSearch>
+        //     {
+        //         Page = 1,
+        //         PageSize = 10,
+        //         SearchTerm = null,
+        //         SortBy = "Id",
+        //         SortOrder = SortOrder.Descending,
+        //         Search = new ProductGroupSearch("PG00", null, null)
+        //     };
 
-            var query = new GetProductGroupQuery(pageModel);
+        //     var query = new GetProductGroupQuery(pageModel);
 
-            var result = await mediator.Send(query, ct);
+        //     var result = await mediator.Send(query, ct);
 
-            return Results.Ok(result);
-        });
+        //     return Results.Ok(result);
+        // });
 
         app.MapPost("/product-group/get-data-grid", async (
                 PageModel<ProductGroupSearch> page,

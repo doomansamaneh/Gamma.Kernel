@@ -1,7 +1,6 @@
 using Gamma.Kernel.Queries;
 using Gamma.Kernel.Security;
 using Gamma.Next.Application.ProductGroup.Dtos;
-using Mediator;
 
 namespace Gamma.Next.Application.ProductGroup.Queries;
 
