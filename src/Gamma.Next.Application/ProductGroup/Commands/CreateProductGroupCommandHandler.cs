@@ -12,6 +12,16 @@ internal sealed class CreateProductGroupCommandHandler(
     IRepository<Domain.Entities.ProductGroup> repository)
     : CreateCommandHandlerBase<CreateProductGroupCommand, Domain.Entities.ProductGroup>(repository)
 {
+    protected override ValueTask<Domain.Entities.ProductGroup> CreateEntity(CreateProductGroupCommand command, CancellationToken ct)
+    {
+        var entity = Domain.Entities.ProductGroup.Create(
+            command.ProductGroup.Code,
+            command.ProductGroup.Title,
+            command.ProductGroup.Comment,
+            command.ProductGroup.IsActive);
+        return ValueTask.FromResult(entity);
+    }
+
     protected override async ValueTask<Result<EmptyUnit>> OnAfterCreate(
             CreateProductGroupCommand command,
             Domain.Entities.ProductGroup entity,

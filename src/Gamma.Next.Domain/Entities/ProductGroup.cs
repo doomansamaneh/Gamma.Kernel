@@ -1,5 +1,6 @@
 using Gamma.Kernel.Attributes;
 using Gamma.Kernel.Entities;
+using Gamma.Kernel.Exceptions;
 
 namespace Gamma.Next.Domain.Entities;
 
@@ -12,4 +13,22 @@ public class ProductGroup : ConcurrencyEntity
     public string Title { get; set; } = default!;
     public string? Comment { get; set; }
     public bool IsActive { get; set; } = true;
+
+    public static ProductGroup Create(
+        string code,
+        string title,
+        string? comment,
+        bool isActive)
+    {
+        if (string.IsNullOrWhiteSpace(code))
+            throw new DomainException("Code is required");
+
+        return new ProductGroup
+        {
+            Code = code,
+            Title = title,
+            Comment = comment,
+            IsActive = isActive
+        };
+    }
 }

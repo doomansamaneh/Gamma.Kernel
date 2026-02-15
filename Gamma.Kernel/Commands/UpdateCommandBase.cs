@@ -9,8 +9,6 @@ public abstract record UpdateCommandBase<TEntity>
     where TEntity : BaseEntity
 {
     public Guid Id { get; set; }
-
-    public abstract TEntity GetEntity();
 }
 
 

@@ -25,7 +25,8 @@ public abstract class CreateCommandHandlerBase<TCommand, TEntity>(
             return Result<Guid>.Fail(preResult.Errors, preResult.Message);
 
         // Main create operation
-        var entity = await Repository.InsertAsync(command.GetEntity(), ct);
+        var entity = await CreateEntity(command, ct);
+        await Repository.InsertAsync(entity, ct);
 
         // Post-create hook: logging, domain events, nested entity creation
         var postResult = await OnAfterCreate(command, entity, ct);
@@ -34,6 +35,10 @@ public abstract class CreateCommandHandlerBase<TCommand, TEntity>(
 
         return Result<Guid>.Ok(entity.Id);
     }
+
+    protected abstract ValueTask<TEntity> CreateEntity(
+       TCommand command,
+       CancellationToken ct);
 
     protected virtual ValueTask<Result<EmptyUnit>> OnBeforeCreate(
         TCommand command,

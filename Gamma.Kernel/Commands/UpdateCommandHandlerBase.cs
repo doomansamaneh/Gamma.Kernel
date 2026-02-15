@@ -23,7 +23,8 @@ public abstract class UpdateCommandHandlerBase<TCommand, TEntity>(
         if (!preResult.Success)
             return Result<int>.Fail(preResult.Errors, preResult.Message);
 
-        var affected = await Repository.UpdateAsync(command.GetEntity(), ct);
+        var entity = await GetEntity(command, ct);
+        var affected = await Repository.UpdateAsync(entity, ct);
         if (affected == 0)
             return Result<int>.Fail($"{typeof(TEntity).Name} not found.");
 
@@ -33,6 +34,10 @@ public abstract class UpdateCommandHandlerBase<TCommand, TEntity>(
 
         return Result<int>.Ok(affected);
     }
+
+    protected abstract ValueTask<TEntity> GetEntity(
+       TCommand command,
+       CancellationToken ct);
 
     protected virtual ValueTask<Result<EmptyUnit>> OnBeforeUpdate(
         TCommand command,

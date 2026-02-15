@@ -8,5 +8,5 @@ public abstract record CreateCommandBase<TEntity>
     : ICommand<Result<Guid>>
     where TEntity : BaseEntity
 {
-    public abstract TEntity GetEntity();
+    //public abstract TEntity GetEntity();
 }

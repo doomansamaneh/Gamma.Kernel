@@ -1,7 +1,6 @@
 using Gamma.Kernel.Abstractions;
 using Gamma.Kernel.Commands;
 using Gamma.Kernel.Models;
-using Gamma.Next.Application.Product.Commands;
 using Mediator;
 
 namespace Gamma.Next.Application.ProductGroup.Commands;
@@ -11,6 +10,18 @@ internal sealed class UpdateProductGroupCommandHandler(
     IRepository<Domain.Entities.ProductGroup> repository)
     : UpdateCommandHandlerBase<UpdateProductGroupCommand, Domain.Entities.ProductGroup>(repository)
 {
+    protected override ValueTask<Domain.Entities.ProductGroup> GetEntity(UpdateProductGroupCommand command, CancellationToken ct)
+    {
+        var entity = Domain.Entities.ProductGroup.Create(
+            command.ProductGroup.Code,
+            command.ProductGroup.Title,
+            command.ProductGroup.Comment,
+            command.ProductGroup.IsActive);
+        entity.Id = command.Id;
+        entity.RowVersion = command.RowVersion;
+        return ValueTask.FromResult(entity);
+    }
+
     protected override async ValueTask<Result<EmptyUnit>> OnAfterUpdate(
         UpdateProductGroupCommand command,
         int affectedRows,

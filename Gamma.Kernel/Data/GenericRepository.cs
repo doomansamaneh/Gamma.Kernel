@@ -110,7 +110,6 @@ public sealed class GenericRepository<TEntity>(
 
         return affected;
     }
-
     #endregion
 
     #region Helpers
@@ -152,6 +151,5 @@ public sealed class GenericRepository<TEntity>(
             ? string.Join(".", tableName.Split('.').Select(p => dialect.EscapeIdentifier(p)))
             : dialect.EscapeIdentifier(tableName);
     }
-
     #endregion
 }
