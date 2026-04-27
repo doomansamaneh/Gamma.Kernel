@@ -3,10 +3,8 @@ using Mediator;
 
 namespace Gamma.Kernel.Commands;
 
-public abstract class DeleteCommandBase
+public abstract record DeleteCommandBase
     : ICommand<Result<int>>
 {
     public Guid Id { get; init; }
 }
-
-

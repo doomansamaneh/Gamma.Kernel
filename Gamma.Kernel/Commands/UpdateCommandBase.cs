@@ -8,7 +8,7 @@ public abstract record UpdateCommandBase<TEntity>
     : ICommand<Result<int>>
     where TEntity : BaseEntity
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; init; }
 }
 
 

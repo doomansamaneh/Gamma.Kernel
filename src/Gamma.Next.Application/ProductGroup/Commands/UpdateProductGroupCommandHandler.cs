@@ -10,20 +10,23 @@ internal sealed class UpdateProductGroupCommandHandler(
     IRepository<Domain.Entities.ProductGroup> repository)
     : UpdateCommandHandlerBase<UpdateProductGroupCommand, Domain.Entities.ProductGroup>(repository)
 {
-    protected override ValueTask<Domain.Entities.ProductGroup> GetEntity(UpdateProductGroupCommand command, CancellationToken ct)
+    protected override ValueTask UpdateEntity(UpdateProductGroupCommand command,
+        Domain.Entities.ProductGroup entity,
+        CancellationToken ct)
     {
-        var entity = Domain.Entities.ProductGroup.Create(
+        entity = Domain.Entities.ProductGroup.Create(
             command.ProductGroup.Code,
             command.ProductGroup.Title,
             command.ProductGroup.Comment,
             command.ProductGroup.IsActive);
         entity.Id = command.Id;
         entity.RowVersion = command.RowVersion;
-        return ValueTask.FromResult(entity);
+        return ValueTask.CompletedTask;
     }
 
     protected override async ValueTask<Result<EmptyUnit>> OnAfterUpdate(
         UpdateProductGroupCommand command,
+        Domain.Entities.ProductGroup entity,
         int affectedRows,
         CancellationToken ct)
     {

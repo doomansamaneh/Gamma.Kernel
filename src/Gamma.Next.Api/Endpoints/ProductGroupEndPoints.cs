@@ -30,7 +30,7 @@ public static class ProductGroupEndpoints
             CancellationToken ct
         ) =>
         {
-            command.Id = id;
+            var editCommand = command with { Id = id };
             var result = await mediator.Send(command, ct);
             return result.Success
                 ? Results.Ok(result.Data)

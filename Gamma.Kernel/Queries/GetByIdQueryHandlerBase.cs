@@ -43,4 +43,3 @@ public abstract class GetByIdQueryHandlerBase<TQuery, TDto>(
         CancellationToken ct)
         => ValueTask.FromResult(dto);
 }
-

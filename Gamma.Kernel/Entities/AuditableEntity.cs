@@ -1,4 +1,3 @@
-
 using Gamma.Kernel.Attributes;
 
 namespace Gamma.Kernel.Entities;

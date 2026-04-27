@@ -18,8 +18,8 @@ public interface IRepository<TEntity>
         TKey id,
         CancellationToken ct = default);
 
-    // ValueTask<TEntity?> GetByIdAsync<TKey>(
-    //     TKey id,
-    //     CancellationToken ct = default);
+    ValueTask<TEntity?> GetByIdAsync<TKey>(
+        TKey id,
+        CancellationToken ct = default);
 }
 

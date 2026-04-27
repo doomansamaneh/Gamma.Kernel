@@ -21,4 +21,40 @@ public static class SqlDialectResolver
                 $"Supported databases: SQL Server, PostgreSQL, MySQL, Oracle.")
         };
     }
+
+    public static string EscapeIdentifier(ISqlDialect dialect, string identifier)
+    {
+        if (string.IsNullOrEmpty(identifier))
+            return identifier;
+
+        int spaceIndex = identifier.IndexOf(' ');
+        string identifierPart;
+        string aliasPart = "";
+
+        if (spaceIndex < 0)
+        {
+            identifierPart = identifier;
+        }
+        else
+        {
+            identifierPart = identifier[..spaceIndex];
+            aliasPart = identifier[(spaceIndex + 1)..].Trim();
+        }
+
+        var parts = identifierPart.Split('.');
+        for (int i = 0; i < parts.Length; i++)
+        {
+            string part = parts[i].Trim();
+            if (!part.StartsWith(dialect.EscapeStartChar) && !part.EndsWith(dialect.EscapeEndChar))
+                parts[i] = $"{dialect.EscapeStartChar}{part}{dialect.EscapeEndChar}";
+            else parts[i] = part;
+        }
+
+        var escapedIdentifier = string.Join(".", parts);
+
+        if (string.IsNullOrEmpty(aliasPart))
+            return escapedIdentifier;
+
+        return $"{escapedIdentifier} {aliasPart}";
+    }
 }

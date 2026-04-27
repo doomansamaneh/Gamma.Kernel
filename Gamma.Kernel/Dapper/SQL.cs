@@ -2,6 +2,8 @@ namespace Gamma.Kernel.Dapper;
 
 public static class SQL
 {
+    public const string WithNoLock = "WITH (NOLOCK)";
+
     public static SqlBuilder WITH(string format, params object[] args)
     {
         //todo: 

@@ -14,7 +14,8 @@ public sealed class GenericRepository<TEntity>(
     IUidGenerator uidGenerator,
     ISystemClock clock
 ) : IRepository<TEntity>
-    where TEntity : BaseEntity, new()
+    where TEntity : BaseEntity
+    //, new()
 {
     private const string ID_FIELD = "Id";
     private static IUnitOfWork Uow => UnitOfWorkScope.Current;
@@ -110,6 +111,20 @@ public sealed class GenericRepository<TEntity>(
 
         return affected;
     }
+
+    public async ValueTask<TEntity?> GetByIdAsync<TKey>(TKey id, CancellationToken ct = default)
+    {
+        ArgumentNullException.ThrowIfNull(id);
+
+        var dialect = SqlDialectResolver.Resolve(Uow.Connection);
+        var tableName = GetTableName(dialect);
+        var idColumn = dialect.EscapeIdentifier(ID_FIELD);
+
+        var sql = $"SELECT * FROM {tableName} WHERE {idColumn} = @Id";
+        var entity = await Uow.Connection.QueryFirstOrDefaultAsync<TEntity>(sql, new { Id = id }, Uow.Transaction, commandTimeout: dialect.DefaultCommandTimeout);
+
+        return entity;
+    }
     #endregion
 
     #region Helpers
@@ -147,9 +162,7 @@ public sealed class GenericRepository<TEntity>(
     private static string GetTableName(ISqlDialect dialect)
     {
         var tableName = EntityPropertyCache<TEntity>.Instance.TableName;
-        return tableName.Contains('.')
-            ? string.Join(".", tableName.Split('.').Select(p => dialect.EscapeIdentifier(p)))
-            : dialect.EscapeIdentifier(tableName);
+        return dialect.EscapeIdentifier(tableName);
     }
     #endregion
 }

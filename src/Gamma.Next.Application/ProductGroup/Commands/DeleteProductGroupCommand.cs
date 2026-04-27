@@ -5,6 +5,6 @@ using Gamma.Kernel.Security;
 namespace Gamma.Next.Application.ProductGroup.Commands;
 
 [RequiresPermission("ast.product-group.delete")]
-public sealed class DeleteProductGroupCommand
+public sealed record DeleteProductGroupCommand
     : DeleteCommandBase,
     IAuditableCommand;

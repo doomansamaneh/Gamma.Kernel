@@ -47,8 +47,7 @@ public sealed class AuthorizationPipeline<TMessage, TResponse>(
             .GetCustomAttributes<RequiresPermissionAttribute>(true)
             .ToArray();
 
-        if (attrs.Length > 0)
-            return attrs.Select(a => a.Permission).ToArray();
+        if (attrs.Length > 0) return [.. attrs.Select(a => a.Permission)];
 
         // fallback for single attribute
         var single = typeof(TMessage)

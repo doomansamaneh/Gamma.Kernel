@@ -6,7 +6,4 @@ namespace Gamma.Kernel.Commands;
 
 public abstract record CreateCommandBase<TEntity>
     : ICommand<Result<Guid>>
-    where TEntity : BaseEntity
-{
-    //public abstract TEntity GetEntity();
-}
+    where TEntity : BaseEntity;

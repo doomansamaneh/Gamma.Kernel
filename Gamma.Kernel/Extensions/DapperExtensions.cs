@@ -34,7 +34,7 @@ public static class DapperExtensions
 
         // ---------- COUNT ----------
         var countBuilder = builder.Clone();
-        var countSql = $"SELECT COUNT_BIG(1) {countBuilder.WithoutSelectAndOrderBy()}";
+        var countSql = $"SELECT COUNT_BIG(1) {countBuilder.WithoutSelectAndOrderBy(dialect)}";
 
         var totalItems = await connection.ExecuteScalarAsync<long>(
             new CommandDefinition(
@@ -58,7 +58,7 @@ public static class DapperExtensions
 
         // ---------- DATA ----------
         var dataSql = dialect.ApplyPaging(
-            builder.ToString(),
+            builder.ToSqlString(dialect),
             orderBy,
             offsetParameter: "Offset",
             pageSizeParameter: "PageSize"

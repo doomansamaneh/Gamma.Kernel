@@ -1,30 +1,22 @@
 using System.Diagnostics.CodeAnalysis;
+using Gamma.Kernel.Exceptions;
 using Mediator;
 
 namespace Gamma.Kernel.Pipelines;
 
-public sealed class MessageValidatorPipeline<TMessage, TResponse> : MessagePreProcessor<TMessage, TResponse>
-    where TMessage : IValidate
-{
-    protected override ValueTask Handle(TMessage message, CancellationToken cancellationToken)
-    {
-        if (!message.IsValid(out var validationError))
-            throw new ValidationException(validationError);
+// public sealed class MessageValidatorPipeline<TMessage, TResponse> : MessagePreProcessor<TMessage, TResponse>
+//     where TMessage : IValidate
+// {
+//     protected override ValueTask Handle(TMessage message, CancellationToken cancellationToken)
+//     {
+//         if (!message.IsValid(out var validationError))
+//             throw new ValidationException(validationError);
 
-        return default;
-    }
-}
+//         return default;
+//     }
+// }
 
-public interface IValidate : IMessage
-{
-    bool IsValid([NotNullWhen(false)] out ValidationError? error);
-}
-
-public sealed record ValidationError(IEnumerable<string> Errors);
-
-public sealed class ValidationException(ValidationError validationError)
-    : Kernel.Exceptions.GammaException("Validation error")
-{
-
-    public ValidationError ValidationError { get; } = validationError;
-}
+// public interface IValidate : IMessage
+// {
+//     bool IsValid([NotNullWhen(false)] out ValidationError? error);
+// }

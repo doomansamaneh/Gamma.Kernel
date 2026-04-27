@@ -4,7 +4,15 @@ namespace Gamma.Kernel.Data;
 
 public class PostgreSqlDialect : ISqlDialect
 {
-    public string EscapeIdentifier(string identifier) => $"\"{identifier}\"";
+    public string WithNoLock => "";
+    public char EscapeStartChar => '"';
+    public char EscapeEndChar => '"';
+
+    public string EscapeIdentifier(string identifier)
+    {
+        return SqlDialectResolver.EscapeIdentifier(this, identifier);
+    }
+
 
     public string ApplyPaging(
         string baseSql,

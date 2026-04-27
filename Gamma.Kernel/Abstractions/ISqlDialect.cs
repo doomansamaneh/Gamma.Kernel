@@ -3,6 +3,9 @@ namespace Gamma.Kernel.Abstractions;
 public interface ISqlDialect
 {
     // ===== IDENTIFIER ESCAPING =====
+    string WithNoLock { get; }
+    char EscapeStartChar { get; }
+    char EscapeEndChar { get; }
     string EscapeIdentifier(string identifier);
 
     // ===== PAGING =====

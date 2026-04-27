@@ -17,7 +17,7 @@ internal static class ProductGroupSql
                 .From($"{TableName} {TableAlias}");
     }
 
-    internal static SqlBuilder GetById()
+    internal static SqlBuilder GetByIdQuery()
     {
         var sql = BaseQuery()
                 .Select($"{TableAlias}.RowVersion")

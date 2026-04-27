@@ -1,5 +1,3 @@
 namespace Gamma.Kernel.Abstractions;
 
-public interface IApplicationService
-{
-}
+public interface IApplicationService;

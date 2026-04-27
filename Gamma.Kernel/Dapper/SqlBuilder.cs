@@ -1,4 +1,6 @@
 using System.Dynamic;
+using System.Text;
+using Gamma.Kernel.Abstractions;
 using Gamma.Kernel.Enums;
 using Gamma.Kernel.Extensions;
 
@@ -6,8 +8,6 @@ namespace Gamma.Kernel.Dapper;
 
 public sealed class SqlBuilder
 {
-    public const string WithNoLock = "WITH (NOLOCK)";
-
     private readonly SortedDictionary<SqlClause, ClauseBuffer> _buffers = [];
 
     public object? Parameters { get; private set; }
@@ -107,22 +107,22 @@ public sealed class SqlBuilder
         string.Join(" ", _buffers.Values.Select(b => b.Build()))
               .NormalizeWhiteSpace();
 
-    public string WithoutOrderBy() =>
-        BuildExcluding(SqlClause.OrderBy);
+    public string WithoutOrderBy(ISqlDialect dialect) =>
+        ToEscaped(dialect, BuildExcluding(SqlClause.OrderBy));
 
-    public string WithoutSelectAndOrderBy() =>
-        BuildExcluding(SqlClause.Select, SqlClause.OrderBy);
+    public string WithoutSelectAndOrderBy(ISqlDialect dialect) =>
+        ToEscaped(dialect, BuildExcluding(SqlClause.Select, SqlClause.OrderBy));
 
-    public string GetWhereCondition() =>
-        GetClause(SqlClause.Where)?.Replace("WHERE", "", StringComparison.OrdinalIgnoreCase)
+    public string GetWhereCondition(ISqlDialect dialect) =>
+        ToEscaped(dialect, GetClause(SqlClause.Where)?.Replace("WHERE", "", StringComparison.OrdinalIgnoreCase))
         ?? string.Empty;
 
-    public string GetOrderBy() =>
-        GetClause(SqlClause.OrderBy)?.Replace("ORDER BY", "", StringComparison.OrdinalIgnoreCase)
+    public string GetOrderBy(ISqlDialect dialect) =>
+        ToEscaped(dialect, GetClause(SqlClause.OrderBy)?.Replace("ORDER BY", "", StringComparison.OrdinalIgnoreCase))
         ?? string.Empty;
 
-    public string GetJoinClause() =>
-        GetClause(SqlClause.Join) ?? string.Empty;
+    public string GetJoinClause(ISqlDialect dialect) =>
+        ToEscaped(dialect, GetClause(SqlClause.Join)) ?? string.Empty;
 
     private string BuildExcluding(params SqlClause[] excluded) =>
         string.Join(" ",
@@ -151,6 +151,19 @@ public sealed class SqlBuilder
     }
 
     #endregion
+
+    public string ToSqlString(ISqlDialect dialect)
+    {
+        return ToEscaped(dialect, this.ToString());
+    }
+
+    private static string ToEscaped(ISqlDialect dialect, string? sql)
+    {
+        if (string.IsNullOrWhiteSpace(sql)) return string.Empty;
+        return sql.Replace('[', dialect.EscapeStartChar)
+                .Replace(']', dialect.EscapeEndChar)
+                .Replace(SQL.WithNoLock, dialect.WithNoLock);
+    }
 }
 
 internal sealed class ClauseBuffer(string prefix, string? separator)

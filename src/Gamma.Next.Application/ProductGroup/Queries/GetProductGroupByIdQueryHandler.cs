@@ -10,5 +10,5 @@ internal sealed class GetProductGroupByIdQueryHandler(
     IDbConnectionFactory connectionFactory
 ) : GetByIdQueryHandlerBase<GetProductGroupByIdQuery, ProductGroupDto>(connectionFactory)
 {
-    protected override SqlBuilder Sql => ProductGroupSql.GetById();
+    protected override SqlBuilder Sql => ProductGroupSql.GetByIdQuery();
 }

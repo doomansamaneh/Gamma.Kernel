@@ -33,7 +33,7 @@ public abstract class CreateCommandHandlerBase<TCommand, TEntity>(
         if (!postResult.Success)
             return Result<Guid>.Fail(postResult.Errors, postResult.Message);
 
-        return Result<Guid>.Ok(entity.Id);
+        return Result<Guid>.Ok(entity.Id, "Data created successfully");
     }
 
     protected abstract ValueTask<TEntity> CreateEntity(
@@ -49,5 +49,3 @@ public abstract class CreateCommandHandlerBase<TCommand, TEntity>(
         TEntity entity,
         CancellationToken ct) => ValueTask.FromResult(Result<EmptyUnit>.Ok(default));
 }
-
-

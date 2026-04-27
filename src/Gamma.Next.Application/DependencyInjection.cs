@@ -20,10 +20,12 @@ public static class DependencyInjection
            }
        );
 
+        //todo: use mapper or not, why?
         services.AddMapster();
 
         services
             .AddScoped(typeof(IPipelineBehavior<,>), typeof(Kernel.Pipelines.AuthorizationPipeline<,>))
+            //todo: how to apply validation for each command, maybe based on attributes or?
             //.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationPipeline<,>))
             .AddScoped(typeof(IPipelineBehavior<,>), typeof(Kernel.Pipelines.UnitOfWorkPipeline<,>))
             .AddScoped(typeof(IPipelineBehavior<,>), typeof(Kernel.Pipelines.AuditPipeline<,>))

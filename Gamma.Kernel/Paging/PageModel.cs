@@ -15,7 +15,7 @@ public class PageModel
 
     public string? SearchTerm { get; set; }
 
-    public IReadOnlyCollection<FilterExpression> Filters { get; set; } = [];
+    public List<FilterExpression>? Filters { get; set; } = [];
 }
 
 public sealed class PageModel<TSearch> : PageModel
