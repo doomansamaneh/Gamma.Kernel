@@ -239,7 +239,7 @@ public class Generator
         var lookupCondition = info.AllProperties.Any(p => p.Name == "IsActive")
             ? $"""
             {EntityInfo.indent}sql.Where<Domain.Entities.{info.Schema}.{info.Entity}, bool>(x => x.IsActive, SqlOperator.Equals, "@isActive");
-            {EntityInfo.indent}sql.AddParameter("isActive", true);
+            {EntityInfo.indent}{EntityInfo.indent}sql.AddParameter("isActive", true);
             """
             : string.Empty;
 

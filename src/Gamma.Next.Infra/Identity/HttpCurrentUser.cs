@@ -11,7 +11,6 @@ public sealed class HttpCurrentUser(IHttpContextAccessor httpContextAccessor) : 
 
     public IReadOnlyCollection<string> Permissions =>
         [
-        "crm.person.create",
         "ast.product-group.create",
         "ast.product-group.read",
         "ast.product-group.update",

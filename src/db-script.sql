@@ -54,7 +54,7 @@ CREATE TABLE [Ast].[Product](
 	[DateCreated] [datetime] NOT NULL,
 	[ModifiedBy] [nvarchar](520) NOT NULL,
 	[DateModified] [datetime] NOT NULL,
-	[RowVersion] [timestamp] NOT NULL,
+	[RowVersion] [int] NOT NULL,
  CONSTRAINT [PK_Product] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

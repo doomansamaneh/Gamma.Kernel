@@ -45,7 +45,7 @@ class Program
             return;
         }
 
-        var solutionRootPath = solutionRoot.FullName;
+        var solutionRootPath = $"{solutionRoot.FullName}/src";
 
         // ✅ نام فولدر solution
         var solutionFolder = solutionRoot.Name;
