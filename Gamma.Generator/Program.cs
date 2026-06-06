@@ -34,7 +34,7 @@ class Program
             return;
         }
 
-        // ✅ پیدا کردن solution root
+        // ✅ find solution root
         var currentDir = new DirectoryInfo(Environment.CurrentDirectory);
 
         var solutionRoot = currentDir.Parent;
@@ -47,10 +47,10 @@ class Program
 
         var solutionRootPath = $"{solutionRoot.FullName}/src";
 
-        // ✅ نام فولدر solution
+        // ✅ solution folder name
         var solutionFolder = solutionRoot.Name;
 
-        // gamma.zed -> Gamma.Zed
+        // gamma.next -> Gamma.Next
         var solutionName = string.Join(".",
             solutionFolder
                 .Split('.', StringSplitOptions.RemoveEmptyEntries)
@@ -60,7 +60,7 @@ class Program
         var applicationProject = $"{solutionName}.Application";
         var infraProject = $"{solutionName}.Infra";
 
-        // ✅ مسیر Entity
+        // ✅ Entity folder
         var entityPath = Path.Combine(
             solutionRootPath,
             domainProject,
@@ -82,7 +82,7 @@ class Program
         info.Schema = schema;
         info.Entity = entityName;
 
-        // ✅ مسیر خروجی Commands
+        // ✅ Commands generation path
         var applicationPath = Path.Combine(
             solutionRootPath,
             applicationProject,

@@ -3,10 +3,10 @@ using Gamma.Kernel.Abstractions;
 using Gamma.Kernel.Extensions;
 using Gamma.Kernel.Paging;
 using Gamma.Kernel.Security;
-using Gamma.Zed.Application.Ast.Product.Dtos;
-using Gamma.Zed.Application.Ast.Product.Sql;
+using Gamma.Next.Application.Ast.Product.Dtos;
+using Gamma.Next.Application.Ast.Product.Sql;
 
-namespace Gamma.Zed.Application.Ast.Product.Queries;
+namespace Gamma.Next.Application.Ast.Product.Queries;
 
 [RequiresPermission("ast.product.export")]
 public sealed record ProductExportQuery(
@@ -21,7 +21,7 @@ internal sealed class ProductExportQueryHandler(IDbConnectionFactory connectionF
         CancellationToken ct)
     {
         var sql = ProductSql.BuildExportQuery(query.Filter);
-        
+
         using var connection = connectionFactory.CreateConnection();
         return await connection.QueryAsync<ProductGridDto>(
             sql,

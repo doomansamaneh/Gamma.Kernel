@@ -4,7 +4,7 @@ using Gamma.Kernel.Entities;
 namespace Gamma.Next.Domain.Entities.Ast;
 
 [Schema("Ast")]
-public class Product : ConcurrencyEntity
+public partial class Product : ConcurrencyEntity
 {
     public Guid ProductGroupId { get; set; }
     public string Code { get; set; } = default!;

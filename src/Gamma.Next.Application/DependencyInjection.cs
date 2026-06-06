@@ -1,10 +1,7 @@
-using System.Reflection;
-using FluentValidation;
-using Gamma.Kernel.Abstractions;
-using Gamma.Kernel.Services;
-using Mapster;
-using Mediator;
 using Microsoft.Extensions.DependencyInjection;
+using FluentValidation;
+using Mediator;
+using Gamma.Kernel.Abstractions;
 
 namespace Gamma.Next.Application;
 
@@ -20,13 +17,11 @@ public static class DependencyInjection
            }
        );
 
-        //todo: use mapper or not, why?
-        services.AddMapster();
+        //services.AddScoped<IAuthorizationService, Services.AuthorizationService>();
 
         services
+            .AddScoped(typeof(IPipelineBehavior<,>), typeof(Kernel.Pipelines.ValidationPipeline<,>))
             .AddScoped(typeof(IPipelineBehavior<,>), typeof(Kernel.Pipelines.AuthorizationPipeline<,>))
-            //todo: how to apply validation for each command, maybe based on attributes or?
-            //.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationPipeline<,>))
             .AddScoped(typeof(IPipelineBehavior<,>), typeof(Kernel.Pipelines.UnitOfWorkPipeline<,>))
             .AddScoped(typeof(IPipelineBehavior<,>), typeof(Kernel.Pipelines.AuditPipeline<,>))
             ;
@@ -41,50 +36,6 @@ public static class DependencyInjection
                  .WithScopedLifetime()
                 );
 
-        //services.DecorateProxies();
-
-        return services;
-    }
-
-    /// <summary>
-    /// decorate all service method calls viw proxy
-    /// </summary>
-    /// <param name="services"></param>
-    /// <returns></returns>
-    /// <exception cref="InvalidOperationException"></exception>
-    private static IServiceCollection DecorateProxies(this IServiceCollection services)
-    {
-        var appServiceTypes = services
-            .Where(d => typeof(IApplicationService).IsAssignableFrom(d.ServiceType))
-            .Select(d => d.ServiceType)
-            .ToList();
-
-        foreach (var type in appServiceTypes)
-        {
-            services.Decorate(type, (inner, sp) =>
-            {
-                // Resolve the authorize service from the DI container
-                var authorizeService = sp.GetRequiredService<IAuthorizationService>();
-
-                // Make a closed AppServiceProxy<type>
-                var proxyType = typeof(AppServiceProxy<>).MakeGenericType(type);
-
-                // Get the static Create<TService> method (generic)
-                var createMethod = proxyType.GetMethod(
-                    "Create",
-                    BindingFlags.Public | BindingFlags.Static
-                ) ?? throw new InvalidOperationException("Cannot find Create method");
-
-                // Make the method generic with the same type
-                var genericMethod = createMethod.MakeGenericMethod(type);
-
-                // Invoke Create with inner + authorizeService
-                var proxy = genericMethod.Invoke(null, [inner, authorizeService])
-                    ?? throw new InvalidOperationException("Proxy creation returned null");
-
-                return proxy;
-            });
-        }
         return services;
     }
 }

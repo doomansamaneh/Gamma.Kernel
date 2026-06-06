@@ -3,10 +3,10 @@ using Gamma.Kernel.Abstractions;
 using Gamma.Kernel.Extensions;
 using Gamma.Kernel.Paging;
 using Gamma.Kernel.Security;
-using Gamma.Zed.Application.{{Schema}}.{{Entity}}.Dtos;
-using Gamma.Zed.Application.{{Schema}}.{{Entity}}.Sql;
+using {{ApplicationNamespace}}.{{Schema}}.{{Entity}}.Dtos;
+using {{ApplicationNamespace}}.{{Schema}}.{{Entity}}.Sql;
 
-namespace Gamma.Zed.Application.{{Schema}}.{{Entity}}.Queries;
+namespace {{ApplicationNamespace}}.{{Schema}}.{{Entity}}.Queries;
 
 [RequiresPermission("{{schema_lower}}.{{entity_lower}}.export")]
 public sealed record {{Entity}}ExportQuery(
