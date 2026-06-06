@@ -1,5 +1,4 @@
 using System.Dynamic;
-using System.Text;
 using Gamma.Kernel.Abstractions;
 using Gamma.Kernel.Enums;
 using Gamma.Kernel.Extensions;
@@ -10,7 +9,7 @@ public sealed class SqlBuilder
 {
     private readonly SortedDictionary<SqlClause, ClauseBuffer> _buffers = [];
 
-    public object? Parameters { get; private set; }
+    public object? Parameters { get; set; }
 
     #region Fluent API
 
@@ -21,13 +20,13 @@ public sealed class SqlBuilder
         Append(SqlClause.From, " FROM ", null, sql);
 
     public SqlBuilder InnerJoin(string sql) =>
-        Append(SqlClause.Join, " INNER JOIN ", null, sql);
+        Append(SqlClause.Join, "", " ", $"INNER JOIN {sql}");
 
     public SqlBuilder LeftJoin(string sql) =>
-        Append(SqlClause.Join, " LEFT JOIN ", null, sql);
+        Append(SqlClause.Join, "", " ", $"LEFT JOIN {sql}");
 
     public SqlBuilder RightJoin(string sql) =>
-        Append(SqlClause.Join, " RIGHT JOIN ", null, sql);
+        Append(SqlClause.Join, "", " ", $"RIGHT JOIN {sql}");
 
     public SqlBuilder Where(string sql) =>
         Append(SqlClause.Where, " WHERE ", " AND ", sql);
@@ -92,8 +91,16 @@ public sealed class SqlBuilder
 
         var dict = Parameters as IDictionary<string, object?> ?? new ExpandoObject();
 
+        object finalValue = value;
+        if (value is string s)
+        {
+            if (!string.IsNullOrWhiteSpace(s)) finalValue = s.ToNormalString();
+        }
+
         if (!dict.ContainsKey(name))
-            dict[name] = value;
+        {
+            dict[name] = finalValue;
+        }
 
         Parameters = dict;
         return this;

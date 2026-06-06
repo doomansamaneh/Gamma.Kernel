@@ -13,6 +13,11 @@ public class OracleDialect : ISqlDialect
         return SqlDialectResolver.EscapeIdentifier(this, identifier);
     }
 
+    public string EscapeSql(string sql)
+    {
+        return SqlDialectResolver.EscapeSql(this, sql);
+    }
+
     public string ApplyPaging(
         string baseSql,
         string orderBy,

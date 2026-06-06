@@ -1,8 +1,10 @@
 using Dapper;
+using Mediator;
 using Gamma.Kernel.Abstractions;
 using Gamma.Kernel.Dapper;
 using Gamma.Kernel.Models;
-using Mediator;
+using Gamma.Kernel.Extensions;
+using System.Data;
 
 namespace Gamma.Kernel.Queries;
 
@@ -19,20 +21,16 @@ public abstract class GetByIdQueryHandlerBase<TQuery, TDto>(
         TQuery query,
         CancellationToken ct)
     {
-        using var connection = ConnectionFactory.CreateConnection();
+        var sql = Sql;
+        sql.Parameters = new { query.Id };
 
-        var dto = await connection.QueryFirstOrDefaultAsync<TDto>(
-            new CommandDefinition(
-                Sql.ToString(),
-                new { query.Id },
-                cancellationToken: ct
-            )
-        );
+        using var connection = ConnectionFactory.CreateConnection();
+        var dto = await connection.QueryFirstOrDefaultAsync<TDto>(sql, cancellationToken: ct);
 
         if (dto is null)
-            return Result<TDto>.Fail("Entity not found");
+            return Result<TDto>.Fail($"Entity not found");
 
-        dto = await OnAfterLoad(query, dto, ct);
+        dto = await OnAfterLoad(query, dto, connection, ct);
 
         return Result<TDto>.Ok(dto);
     }
@@ -40,6 +38,7 @@ public abstract class GetByIdQueryHandlerBase<TQuery, TDto>(
     protected virtual ValueTask<TDto> OnAfterLoad(
         TQuery query,
         TDto dto,
+        IDbConnection connection,
         CancellationToken ct)
         => ValueTask.FromResult(dto);
 }

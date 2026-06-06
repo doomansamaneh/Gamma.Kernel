@@ -9,8 +9,12 @@ public record BatchActionCommandBase(List<Guid> Ids)
 public abstract class BatchActionCommandValidatorBase<TCommand> : AbstractValidator<TCommand>
     where TCommand : BatchActionCommandBase
 {
+    private const int MaxBatchSize = 100;
     protected BatchActionCommandValidatorBase()
     {
-        RuleFor(x => x.Ids).NotEmpty();
+        RuleFor(x => x.Ids)
+            .NotEmpty()
+            .Must(x => x.Count <= MaxBatchSize)
+            .WithMessage($"The number of items in a batch operation cannot exceed {MaxBatchSize}.");
     }
 }

@@ -1,7 +1,8 @@
-using Gamma.Kernel.Exceptions;
+using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System.Text.Json;
+using Gamma.Kernel.Exceptions;
+using Gamma.Kernel.Models;
 
 namespace Gamma.Kernel.Web.Middlewares;
 
@@ -9,6 +10,11 @@ public sealed class GlobalExceptionMiddleware(
     RequestDelegate next,
     ILogger<GlobalExceptionMiddleware> logger)
 {
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+    };
     public async Task InvokeAsync(HttpContext context)
     {
         try
@@ -17,11 +23,11 @@ public sealed class GlobalExceptionMiddleware(
         }
         catch (Exception ex)
         {
-            HandleException(context, ex);
+            await HandleExceptionAsync(context, ex);
         }
     }
 
-    private void HandleException(HttpContext context, Exception exception)
+    private async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         // Log only unexpected exceptions
         if (exception is not IExpectedException)
@@ -31,23 +37,31 @@ public sealed class GlobalExceptionMiddleware(
 
         var error = ExceptionMapper.Map(exception);
 
-        context.Response.StatusCode = MapHttpStatusCode(error.Code);
-        context.Response.ContentType = "application/json";
+        var statusCode = MapHttpStatusCode(error.Code);
+        var response = new ApiResponse<object>
+        {
+            Code = statusCode,
+            Message = error.Message,
+            Errors = error.Details != null ? new[] { error.Details } : null
+        };
 
-        var json = JsonSerializer.Serialize(error);
-        context.Response.WriteAsync(json);
+        context.Response.StatusCode = statusCode;
+        context.Response.ContentType = "application/json";
+        await context.Response.WriteAsync(
+            JsonSerializer.Serialize(response, JsonOptions)
+        );
     }
 
     private static int MapHttpStatusCode(int errorCode)
     {
         return errorCode switch
         {
-            (int)Enums.ErrorCodes.Unauthorized => StatusCodes.Status401Unauthorized,
-            (int)Enums.ErrorCodes.ValidationError => StatusCodes.Status400BadRequest,
-            (int)Enums.ErrorCodes.BusinessRuleViolation => StatusCodes.Status400BadRequest,
-            (int)Enums.ErrorCodes.DatabaseUniqueKey => StatusCodes.Status409Conflict,
-            (int)Enums.ErrorCodes.DatabaseForeignKey => StatusCodes.Status409Conflict,
-            (int)Enums.ErrorCodes.ConcurrencyConflict => StatusCodes.Status409Conflict,
+            (int)Enums.ErrorCategory.Unauthorized => StatusCodes.Status401Unauthorized,
+            (int)Enums.ErrorCategory.ValidationError => StatusCodes.Status400BadRequest,
+            (int)Enums.ErrorCategory.BusinessRuleViolation => StatusCodes.Status400BadRequest,
+            (int)Enums.ErrorCategory.DatabaseUniqueKey => StatusCodes.Status409Conflict,
+            (int)Enums.ErrorCategory.DatabaseForeignKey => StatusCodes.Status409Conflict,
+            (int)Enums.ErrorCategory.ConcurrencyConflict => StatusCodes.Status409Conflict,
             _ => StatusCodes.Status500InternalServerError
         };
     }

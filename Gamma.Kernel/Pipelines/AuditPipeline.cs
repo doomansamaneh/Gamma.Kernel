@@ -12,7 +12,7 @@ public sealed class AuditPipeline<TMessage, TResponse>(
     ICurrentUser currentUser,
     ISystemClock clock)
     : IPipelineBehavior<TMessage, TResponse>
-    where TMessage : IAuditableCommand
+    where TMessage : IAuditableMessage
 {
     public async ValueTask<TResponse> Handle(
         TMessage message,

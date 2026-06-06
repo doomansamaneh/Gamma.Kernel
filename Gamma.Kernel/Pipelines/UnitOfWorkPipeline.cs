@@ -17,23 +17,23 @@ public sealed class UnitOfWorkPipeline<TMessage, TResponse>(IDbConnectionFactory
         var isRoot = !UnitOfWorkScope.HasCurrent;
 
         using var connection = isRoot ? connectionFactory.CreateConnection() : null;
-        using var transaction = isRoot ? connection!.BeginTransaction() : null;
+        //using var transaction = isRoot ? connection!.BeginTransaction() : null;
 
-        using (UnitOfWorkScope.CreateScope(connection, transaction))
+        using (UnitOfWorkScope.CreateScope(connection, null))
         {
             var uow = UnitOfWorkScope.Current;
 
             var response = await next(message, ct);
 
-            if (isRoot)
+            if (isRoot && uow.Transaction != null)
             {
                 try
                 {
-                    transaction!.Commit();
+                    uow.Transaction.Commit();
                 }
                 catch
                 {
-                    transaction!.Rollback();
+                    uow.Transaction.Rollback();
                     throw;
                 }
 

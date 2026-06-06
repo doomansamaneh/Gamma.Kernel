@@ -7,24 +7,32 @@ public abstract class BatchActionCommandHandlerBase<TCommand>(
 ) : ICommandHandler<TCommand, Result<int>>
     where TCommand : BatchActionCommandBase
 {
-    public async ValueTask<Result<int>> Handle(TCommand command, CancellationToken ct)
+    public async ValueTask<Result<int>> Handle(
+        TCommand command,
+        CancellationToken ct)
     {
         ArgumentNullException.ThrowIfNull(command);
 
         var preResult = await OnBeforeChangeAsync(command, ct);
         if (!preResult.Success)
-            return Result<int>.Fail(preResult.Errors, preResult.Message);
+            return Result<int>.Fail(
+                preResult.Errors,
+                preResult.Message);
 
-        await ApplyChangeAsync(command, ct);
+        var applyResult = await ApplyChangeAsync(command, ct);
+        if (!applyResult.Success)
+            return applyResult;
 
         var postResult = await OnAfterChangeAsync(command, ct);
         if (!postResult.Success)
-            return Result<int>.Fail(postResult.Errors, postResult.Message);
+            return Result<int>.Fail(
+                postResult.Errors,
+                postResult.Message);
 
-        return Result<int>.Ok(command.Ids.Count, "Updated successfully");
+        return applyResult;
     }
 
-    protected abstract ValueTask ApplyChangeAsync(
+    protected abstract ValueTask<Result<int>> ApplyChangeAsync(
         TCommand command,
         CancellationToken ct);
 

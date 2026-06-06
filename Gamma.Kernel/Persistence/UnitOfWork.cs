@@ -8,7 +8,7 @@ public sealed class UnitOfWork(
     IDbTransaction? transaction) : IUnitOfWork
 {
     public IDbConnection Connection { get; } = connection ?? throw new ArgumentNullException(nameof(connection));
-    public IDbTransaction? Transaction { get; } = transaction;
+    public IDbTransaction? Transaction { get; private set; } = transaction;
 
     private readonly List<Func<CancellationToken, Task>> _onCommitted = [];
     private bool _committed;
@@ -31,6 +31,13 @@ public sealed class UnitOfWork(
 
         foreach (var action in _onCommitted)
             await action(ct);
+    }
+
+    public IDbTransaction BeginTransactionIfNeeded()
+    {
+        Transaction ??= Connection.BeginTransaction();
+
+        return Transaction;
     }
 }
 

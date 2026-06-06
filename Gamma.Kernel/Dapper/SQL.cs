@@ -11,6 +11,8 @@ public static class SQL
         return new();
     }
 
+    public static SqlBuilder Instance => new();
+
     public static SqlBuilder Select(string format)
     {
         return new SqlBuilder().Select(format);

@@ -24,6 +24,24 @@ public static class SqlDialectResolver
 
     public static string EscapeIdentifier(ISqlDialect dialect, string identifier)
     {
+        return EscapeIdentifier(identifier, dialect.EscapeStartChar, dialect.EscapeEndChar);
+    }
+
+    public static string EscapeSql(ISqlDialect dialect, string sql)
+    {
+        if (string.IsNullOrEmpty(sql)) return sql;
+
+        return sql.Replace('[', dialect.EscapeStartChar)
+                    .Replace(']', dialect.EscapeEndChar);
+    }
+
+    public static string EscapeDefaultIdentifier(string identifier)
+    {
+        return EscapeIdentifier(identifier, '[', ']');
+    }
+
+    private static string EscapeIdentifier(string identifier, char startChar, char endChar)
+    {
         if (string.IsNullOrEmpty(identifier))
             return identifier;
 
@@ -45,8 +63,8 @@ public static class SqlDialectResolver
         for (int i = 0; i < parts.Length; i++)
         {
             string part = parts[i].Trim();
-            if (!part.StartsWith(dialect.EscapeStartChar) && !part.EndsWith(dialect.EscapeEndChar))
-                parts[i] = $"{dialect.EscapeStartChar}{part}{dialect.EscapeEndChar}";
+            if (!part.StartsWith(startChar) && !part.EndsWith(endChar))
+                parts[i] = $"{startChar}{part}{endChar}";
             else parts[i] = part;
         }
 

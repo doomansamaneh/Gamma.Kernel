@@ -18,3 +18,17 @@ public class Result<T>
 
     public static Result<T> Fail(string error, string? message = null) => Fail([error], message);
 }
+
+public sealed record ApiResponse<T>
+{
+    public int Code { get; init; }
+    public string Message { get; init; } = string.Empty;
+    public T? Data { get; init; }
+    public IReadOnlyList<string>? Errors { get; init; }
+
+    public static ApiResponse<T> Success(T data, string message = "Success", int code = 200)
+        => new() { Code = code, Message = message, Data = data };
+
+    public static ApiResponse<T> Failure(IReadOnlyList<string> errors, string message = "Failed", int code = 400)
+        => new() { Code = code, Message = message, Errors = errors };
+}

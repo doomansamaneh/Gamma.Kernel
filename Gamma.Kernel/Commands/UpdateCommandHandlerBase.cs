@@ -13,7 +13,7 @@ public abstract class UpdateCommandHandlerBase<TCommand, TEntity>(
 {
     protected IRepository<TEntity> Repository { get; } = repository;
 
-    public async virtual ValueTask<Result<int>> Handle(
+    public async ValueTask<Result<int>> Handle(
         TCommand command,
         CancellationToken ct)
     {
@@ -27,7 +27,7 @@ public abstract class UpdateCommandHandlerBase<TCommand, TEntity>(
             return Result<int>.Fail(preResult.Errors, preResult.Message);
 
         await UpdateEntity(command, entity, ct);
-        var affected = await Repository.UpdateAsync(entity, ct);
+        var affected = await UpdateAsync(entity, ct);
         if (affected == 0)
             return Result<int>.Fail($"{typeof(TEntity).Name} not found.");
 
@@ -36,6 +36,13 @@ public abstract class UpdateCommandHandlerBase<TCommand, TEntity>(
             return Result<int>.Fail(postResult.Errors, postResult.Message);
 
         return Result<int>.Ok(affected);
+    }
+
+    protected virtual async ValueTask<int> UpdateAsync(
+           TEntity entity,
+           CancellationToken ct)
+    {
+        return await Repository.UpdateAsync(entity, ct);
     }
 
     protected abstract ValueTask UpdateEntity(

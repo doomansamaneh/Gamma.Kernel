@@ -386,3 +386,4 @@ public static class StringExtensions
         return System.Text.Json.JsonSerializer.Deserialize<T>(str, options);
     }
 }
+

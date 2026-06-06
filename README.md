@@ -1,4 +1,4 @@
-﻿# Gamma.Kernel
+﻿﻿# Gamma.Kernel
 
 **Gamma.Kernel** is a lightweight, opinionated .NET kernel for **CQRS, Clean Architecture, and DDD-based applications**.  
 Gamma.Kernel helps you structure your app, enforce cross-cutting concerns, and keep your business logic clean — without locking you into a framework or database.

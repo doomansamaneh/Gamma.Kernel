@@ -1,3 +1,3 @@
 namespace Gamma.Kernel.Abstractions;
 
-public interface ISearchModel { }
+public interface ISearchModel;

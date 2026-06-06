@@ -16,7 +16,6 @@ public abstract class DeleteCommandHandlerBase<TCommand, TEntity>(
         CancellationToken ct)
     {
         ArgumentNullException.ThrowIfNull(command);
-
         // Pre-delete hook
         var preResult = await OnBeforeDelete(command, ct);
         if (!preResult.Success)

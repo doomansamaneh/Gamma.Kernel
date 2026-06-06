@@ -32,7 +32,7 @@ public enum SqlClause
     OrderBy = 16
 }
 
-public enum ErrorCodes
+public enum ErrorCategory
 {
     // ---------- General ----------
     Unknown = 1000,
@@ -73,11 +73,11 @@ public enum DatabaseErrorType
 
 public enum AuditAction
 {
-    Create,
-    Update,
-    Delete,
-    Read,
-    Custom
+    Create = 1,
+    Update = 2,
+    Delete = 3,
+    Read = 4,
+    Custom = 5
 }
 
 public enum SortOrder
@@ -88,8 +88,8 @@ public enum SortOrder
 
 public enum SqlOperator
 {
-    Equal = 1,
-    NotEqual = 2,
+    Equals = 1,
+    NotEquals = 2,
     Contains = 3,
     NotContains = 4,
     LessThan = 5,
@@ -98,8 +98,9 @@ public enum SqlOperator
     GreaterThanOrEqual = 8,
     In = 9,
     NotIn = 10,
-    StartWith = 11,
-    IsNull = 12,
-    IsNotNull = 13,
+    StartsWith = 11,
+    EndsWith = 12,
+    IsNull = 13,
+    IsNotNull = 14,
     None = 99,
 }

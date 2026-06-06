@@ -1,6 +1,5 @@
 using Dapper;
 using System.Data;
-using Gamma.Kernel.Enums;
 using Gamma.Kernel.Paging;
 using Gamma.Kernel.Dapper;
 using Gamma.Kernel.Data;
@@ -24,17 +23,12 @@ public static class DapperExtensions
         page.Normalize();
         var dialect = SqlDialectResolver.Resolve(connection);
 
-        // ---------- ORDER BY ----------
-        var orderBy = !string.IsNullOrWhiteSpace(page.SortBy)
-            ? dialect.EscapeIdentifier(page.SortBy.ToSafeSqlField())
-            : dialect.EscapeIdentifier("Id");
-
-        if (page.SortOrder == SortOrder.Descending)
-            orderBy += " DESC";
-
         // ---------- COUNT ----------
         var countBuilder = builder.Clone();
         var countSql = $"SELECT COUNT_BIG(1) {countBuilder.WithoutSelectAndOrderBy(dialect)}";
+
+        var orderByClause = builder.GetOrderBy(dialect);
+        if (string.IsNullOrWhiteSpace(orderByClause)) orderByClause = dialect.EscapeIdentifier("Id");
 
         var totalItems = await connection.ExecuteScalarAsync<long>(
             new CommandDefinition(
@@ -58,8 +52,8 @@ public static class DapperExtensions
 
         // ---------- DATA ----------
         var dataSql = dialect.ApplyPaging(
-            builder.ToSqlString(dialect),
-            orderBy,
+            builder.WithoutOrderBy(dialect),
+            orderByClause,
             offsetParameter: "Offset",
             pageSizeParameter: "PageSize"
         );
@@ -84,5 +78,53 @@ public static class DapperExtensions
             Page = page.Page,
             PageSize = page.PageSize
         };
+    }
+
+    public static async Task<IEnumerable<T>> QueryAsync<T>(
+        this IDbConnection connection,
+        SqlBuilder builder,
+        IDbTransaction? transaction = null,
+        int? commandTimeout = null,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(connection);
+        ArgumentNullException.ThrowIfNull(builder);
+
+        var dialect = SqlDialectResolver.Resolve(connection);
+
+        var dataSql = builder.ToSqlString(dialect);
+        var items = await connection.QueryAsync<T>(
+            new CommandDefinition(
+                dataSql.NormalizeWhiteSpace(),
+                builder.Parameters,
+                transaction,
+                commandTimeout,
+                cancellationToken: cancellationToken)
+        );
+
+        return items;
+    }
+
+    public static async Task<T?> QueryFirstOrDefaultAsync<T>(
+        this IDbConnection connection,
+        SqlBuilder builder,
+        IDbTransaction? transaction = null,
+        int? commandTimeout = null,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(connection);
+        ArgumentNullException.ThrowIfNull(builder);
+
+        var dialect = SqlDialectResolver.Resolve(connection);
+
+        var dataSql = builder.ToSqlString(dialect);
+        return await connection.QueryFirstOrDefaultAsync<T>(
+            new CommandDefinition(
+                dataSql.NormalizeWhiteSpace(),
+                builder.Parameters,
+                transaction,
+                commandTimeout,
+                cancellationToken: cancellationToken)
+        );
     }
 }

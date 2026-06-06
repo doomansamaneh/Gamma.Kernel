@@ -8,6 +8,7 @@ public interface IUnitOfWork //: IAsyncDisposable
     public IDbTransaction? Transaction { get; }
     void OnCommitted(Func<CancellationToken, Task> action);
     Task NotifyCommittedAsync(CancellationToken ct = default);
+    IDbTransaction BeginTransactionIfNeeded();
 }
 
 

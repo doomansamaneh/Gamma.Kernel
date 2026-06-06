@@ -17,6 +17,8 @@ public sealed class DefaultAuditMetadataResolver : IAuditMetadataResolver
             EntityId = ResolveEntityId(command),
             Before = ResolveSnapshot(command, "Before"),
             After = ResolveSnapshot(command, "After"),
+            Payload = command
+            // PayloadString = command.Serialize()
         };
     }
 

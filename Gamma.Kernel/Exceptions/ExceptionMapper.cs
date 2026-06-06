@@ -19,13 +19,13 @@ public static class ExceptionMapper
 
             UnauthorizedAccessException => new ErrorResponse
             {
-                Code = (int)ErrorCodes.Unauthorized,
+                Code = (int)ErrorCategory.Unauthorized,
                 Message = "Unauthorized"
             },
 
             _ => new ErrorResponse
             {
-                Code = (int)ErrorCodes.InternalServerError,
+                Code = (int)ErrorCategory.InternalServerError,
                 Message = exception.Message
             }
         };
@@ -37,37 +37,37 @@ public static class ExceptionMapper
         {
             DatabaseErrorType.ForeignKeyViolation => new ErrorResponse
             {
-                Code = (int)ErrorCodes.DatabaseForeignKey,
+                Code = (int)ErrorCategory.DatabaseForeignKey,
                 Message = "Database foreign key violation"
             },
 
             DatabaseErrorType.UniqueConstraintViolation => new ErrorResponse
             {
-                Code = (int)ErrorCodes.DatabaseUniqueKey,
+                Code = (int)ErrorCategory.DatabaseUniqueKey,
                 Message = "Duplicate value"
             },
 
             DatabaseErrorType.Timeout => new ErrorResponse
             {
-                Code = (int)ErrorCodes.DatabaseTimeout,
+                Code = (int)ErrorCategory.DatabaseTimeout,
                 Message = "Database timeout"
             },
 
             DatabaseErrorType.DataValidation => new ErrorResponse
             {
-                Code = (int)ErrorCodes.DatabaseDataValidation,
+                Code = (int)ErrorCategory.DatabaseDataValidation,
                 Message = "Database validation error"
             },
 
             DatabaseErrorType.ConcurrencyConflict => new ErrorResponse
             {
-                Code = (int)ErrorCodes.ConcurrencyConflict,
+                Code = (int)ErrorCategory.ConcurrencyConflict,
                 Message = "Concurrency conflict"
             },
 
             _ => new ErrorResponse
             {
-                Code = (int)ErrorCodes.InternalServerError,
+                Code = (int)ErrorCategory.InternalServerError,
                 Message = "Database error"
             }
         };

@@ -7,6 +7,7 @@ public interface ISqlDialect
     char EscapeStartChar { get; }
     char EscapeEndChar { get; }
     string EscapeIdentifier(string identifier);
+    string EscapeSql(string sql);
 
     // ===== PAGING =====
     string ApplyPaging(

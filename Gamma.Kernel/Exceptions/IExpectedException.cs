@@ -1,5 +1,3 @@
 namespace Gamma.Kernel.Exceptions;
 
-public interface IExpectedException
-{
-}
+public interface IExpectedException;
