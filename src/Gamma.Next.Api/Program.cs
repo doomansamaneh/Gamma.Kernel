@@ -1,6 +1,5 @@
 using Gamma.Kernel.Web.Extensions;
 using Gamma.Kernel;
-using Gamma.Next.Api.Endpoints;
 using Gamma.Next.Application;
 using Gamma.Next.Infra;
 using Gamma.Next.Api;
@@ -38,6 +37,6 @@ app.MapGet("/", () =>
         time = DateTime.Now
     }));
 
-app.MapProductGroupEndPoints();
+app.MapEndPoints();
 
 app.Run();
