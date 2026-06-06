@@ -98,7 +98,6 @@ GO
   ├─ MyApp.Application
   │   ├─ Commands
   │   ├─ Queries
-  │   ├─ Services (Application)
   │   └─ DTOs
   │
   ├─ MyApp.Infra
@@ -116,20 +115,21 @@ GO
 
 ```mermaid
 flowchart TD
-    A[API / Endpoints] --> B[Application Services]
-    B --> C[Command and Query Handlers]
-    C --> D[Domain Layer]
-    C --> E[Unit of Work / Transactions]
-    C --> F[Cross-Cutting Concerns]
+    A[API / Endpoints] --> B[Command and Query Handlers]
+    B --> C[Domain Layer]
+
+    B --> E[Unit of Work / Transactions]
+    B --> F[Cross-Cutting Concerns]
+
     F --> G[Authorization Decorators]
     F --> H[Logging and Audit]
+
     E --> I[Repositories]
     I --> J[Database]
 
     style A fill:#f9f,stroke:#333,stroke-width:2px
     style B fill:#bbf,stroke:#333,stroke-width:2px
     style C fill:#bfb,stroke:#333,stroke-width:2px
-    style D fill:#ffb,stroke:#333,stroke-width:2px
     style E fill:#fbb,stroke:#333,stroke-width:2px
     style F fill:#fbf,stroke:#333,stroke-width:2px
     style G fill:#fdf,stroke:#333,stroke-width:2px
