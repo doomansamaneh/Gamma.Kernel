@@ -15,7 +15,8 @@ public static class ProductEndpoints
     {
         var apiGroup = app.MapGroup("/ast/product")
                           .WithTags("Ast.Product")
-                          .RequireAuthorization();
+                          //.RequireAuthorization()
+                            ;
 
         apiGroup.MapPost("/create", async (
                 CreateProductCommand command,
