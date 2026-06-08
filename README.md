@@ -32,7 +32,7 @@ Gamma.Kernel centralizes these concerns in a **minimal, reusable kernel** so you
 ## Key Features
 
 - `ICommand`/`IQuery` and handler pipelines for CQRS
-- DispatchProxy and decorator-based **authorization enforcement**
+- ABAC **authorization enforcement**
 - Attribute-based entity helpers (`Identity`, `InsertOnly`, `RowVersion`)
 - Dapper Micro-ORM integration – generic CUD repositories, transactional support, attribute-based entity mapping (Identity, InsertOnly, RowVersion)
 - Unit of Work & transaction context management
